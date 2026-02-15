@@ -2,6 +2,8 @@
 
 分为开源情报搜集(OSINT)和主动搜集(主动情报搜集与打点阶段密不可分)。
 
+[TOC]
+
 ## OSINT(开源情报收集)
 
 #### 情报周期 { 需求(plan)，收集(collect)，处理(process)，分析(analysis)，分发(dissemination) } 
@@ -10,14 +12,19 @@
 
 ###### 调查目标：
 
+```
 人员，组织，事件。
+```
 
 ###### 框架：
 
+```
 https://osintframework.com/
+```
 
 ###### 综合工具网站：
 
+```
 https://www.raebaker.net/resources
 
 https://start.me/p/7kYgk2/rae-baker-deep-dive-osint
@@ -25,10 +32,13 @@ https://start.me/p/7kYgk2/rae-baker-deep-dive-osint
 https://spacekid.notion.site/osint
 
 https://rr.reuser.biz/
+```
 
 ###### 教程：
 
+```
 https://xz.aliyun.com/news/17607
+```
 
 <br>
 
@@ -60,22 +70,29 @@ Other websites' collection(其他网站收集)
 
 ###### 虚拟信息，虚拟设备，虚拟通道
 
+```
 尽可能少的留下可能证明真实身份的攻击痕迹。
+```
 
 ###### 真实机/虚拟机
 
+```
 专用设备，二手笔记本，vmware，virtualBox，Hyper-V，KVM，QEMU，移动设备模拟器
+```
 
 ###### 虚拟通讯
 
+```
 vpn，vps，机场
 
 (隐私浏览器)
 
 tor，freenet，i2p，canvas defender(数字指纹)，AdBlock(数字指纹)，Disconnect Me(数字指纹)
+```
 
 ###### 虚拟账户
 
+```
 (虚拟电话)
 
 voip，mysudo
@@ -83,18 +100,25 @@ voip，mysudo
 (加密邮箱/匿名邮箱)
 
 protonmail，thexyz，startmail，tutanota，zoho Mail
+```
 
 ###### 假身份生成
 
+```
 www.fakenamegenerator.com
+```
 
 ###### 随机头像生成
 
+```
 www.thispersondoesnotexist.com
+```
 
 ###### 虚拟支付卡
 
+```
 www.privacy.com/virtual-card
+```
 
 ------
 
@@ -104,34 +128,47 @@ www.privacy.com/virtual-card
 
 ###### 核心身份
 
+```
 姓名(命名习惯[名，姓，族名..]，昵称(相似昵称)，用户名[各网络博客等]）
 
 性别，年龄/出生日期，国籍/民族/籍贯，政府标识符(身份证，户籍证，护照，驾驶证，行驶证...)，生物特征(画像，指纹，声纹)
+```
 
 ###### 联系方式与位置信息
 
+```
 移动/固定电话号码，电子邮箱，通讯账号(wechat，QQ，telegram)，固定地址/现居住地，IP/MAC地址，汽车/牌照/型号
+```
 
 ###### 社会关系与背景
 
+```
 家庭成员/伴侣，朋友，教育背景，工作履历，同事/上下级，社团/组织/党派
+```
 
 ###### 数字足迹与网络身份
 
+```
 社交媒体账号(微博，抖音，facebook，twitter，instagram)，个人网站/博客，网站发言/活跃内容，注册信息
+```
 
 ###### 财务与资产状况
 
+```
 公司/法人/股东，房产，知识产权/专利，商标，法院判决/失信记录
+```
 
 ###### 时间线与事件
 
+```
 爱好，旅行经历，生活模式（经常出现的时间/地点），报道
+```
 
 ++++++++++++++++++++++++++++++
 
 ###### 用户名
 
+```
 namechk.com #查找用户名注册过的东西
 
 whatsmyname.app #枚举多网站用户名
@@ -147,9 +184,11 @@ www.truepeoplesearch.com #搜索姓名，电话，地址
 webmii.com #搜索名字在互联网上留下的痕迹
 
 peekyou.com #搜索名字在互联网上留下的痕迹
+```
 
 ###### 电子邮箱
 
+```
 查找邮箱
 
 hunter.io
@@ -177,9 +216,11 @@ https://epieos.com/
 查询邮箱是否被暴露
 
 haveibeenpwned.com
+```
 
 ###### 电话号码
 
+```
 fastpeoplesearch.io
 
 truepeoplesearch.net
@@ -195,6 +236,7 @@ www.truecaller.com
 calleridtest.com
 
 infobel.com
+```
 
 ###### 生活模式 : 研究目标的生活模式，例如发朋友圈的时间间隔，长期规律等
 
@@ -224,6 +266,7 @@ Reddit，4chan，8chan
 
 ###### twitter(X)
 
+```
 twitter.com/search-advanced #twitter高级搜索
 
 socialbearing.com
@@ -233,15 +276,19 @@ www.twitonomy.com
 spoonbill.io #查看目标账号之前的签名
 
 tinfoleak.com #查找目标账户的敏感信息
+```
 
 ###### facebook
 
+```
 www.sowsearch.info #搜索Facebook目标用户的一些信息
 
 intelx.io/tools?tab=facebook #搜索Facebook目标用户的一些信息
+```
 
 ###### instagram
 
+```
 tools.codeofaninja.com/find-instagram-user-id #查询Instagram的用户id
 
 www.instadp.com #下载Instagram的用户的资料
@@ -251,11 +298,13 @@ imginn.com #匿名浏览 Instagram 快拍，直接搜索用户名即可
 ###### telegram
 
 tgstat.com
+```
 
 #### 交通情报
 
-地图
+###### 地图
 
+```
 earth.google.com #谷歌地球
 
 maps.google.com #谷歌地图
@@ -265,15 +314,19 @@ map.baidu.com #百度地图
 map.qq.com #腾讯地图
 
 ditu.amap.com #高德地图
+```
 
-公路运输
+###### 公路运输
 
+```
 earth.google.com
 
 https://www.icauto.com.cn/gonglu/ #车主指南
+```
 
-铁路运输
+###### 铁路运输
 
+```
 earth.google.com
 
 https://www.openrailwaymap.org/ #OpenRailwayMap
@@ -281,20 +334,27 @@ https://www.openrailwaymap.org/ #OpenRailwayMap
 https://qq.ip138.com/train/ #全球列车时刻表(zh-CN)
 
 http://railmap.renchang.me/ #任畅铁路地图
+```
 
-航空运输
+###### 航空运输
 
+```
 https://www.flightradar24.com/ #flightradar24
 
 https://zh.flightaware.com/ #flightaware
+```
 
-水路运输
+###### 水路运输
 
+```
 https://www.marinetraffic.com/ #marinetraffic
 
 https://www.vesselfinder.com/ #vesselfinder
 
 https://www.shipxy.com/ #shipxy
+```
+
+
 
 ------
 
@@ -302,6 +362,7 @@ https://www.shipxy.com/ #shipxy
 
 ###### 域名，ip，cdn，dns
 
+```
 tools.ipip.net/cdn.php
 
 get-site-ip.com
@@ -313,9 +374,11 @@ ping.chinaz.com #超级ping
 ping.aizhan.com #超级ping
 
 ping / nslookup / dig #(--主动搜集)
+```
 
 ###### ip反查
 
+```
 site.ip138.com #ip138反查
 
 x.threatbook.cn #微步在线
@@ -323,9 +386,11 @@ x.threatbook.cn #微步在线
 dns.aizhan.com #爱站反查域名
 
 fofa.info #fofa
+```
 
 ###### whois，whois反查，注册备案，SSL证书查询
 
+```
 whois.aliyun.com
 
 whois.chinaz.com
@@ -363,11 +428,11 @@ crt.sh #crtsh
 censys.io/certificates #censys
 
 sslmate.com/certspotter/api #certspotter
-
-
+```
 
 ###### 子域名
 
+```
 site:xxx.com #google dorking
 
 site.ip138.com ip138
@@ -393,15 +458,19 @@ wfuzz -u "https://www.baidu.com" -H "Host: FUZZ.baidu.com" -w /usr/share/dnsenum
 github.com/shmilylty/OneForAll #OneForAll子域名查询工具 教程: blog.csdn.net/weixin_49769267/article/details/131464408 #(--主动搜集)
 
 github.com/euphrat1ca/LayerDomainFinder/releases #layer子域名挖掘机 #(--主动搜集)
+```
 
 ###### 旁站
 
+```
 stool.chinaz.com/same
 
 chapangzhan.com
+```
 
 ###### c段
 
+```
 c.webscan.cc #c段查询
 
 ip="8.210.121.0/24" #fofa
@@ -409,17 +478,21 @@ ip="8.210.121.0/24" #fofa
 net:"8.210.121.0/24" #shodan
 
 nmap -sn 192.168.12.1/24 #nmap
+```
 
 ###### 威胁情报收集
 
+```
 x.threatbook.cn #微步
 
 ti.nsfocus.com #绿盟科技 威胁情报云
 
 isecurity.huawei.com/sec #华为安全平台
+```
 
 ###### 网络空间搜索引擎
 
+```
 fofa.info #FOFA
 
 www.zoomeye.org #钟馗之眼
@@ -435,15 +508,19 @@ hunter.qianxin.com #鹰图
 quake.360.net/quake/#/index #360quake
 
 www.kamerka.io / lite.kamerka.io #kamerka(下载) / 轻量kamerka
+```
 
 ###### app应用
 
+```
 www.qimai.cn #七麦
 
 weixin.sogou.com #搜狗微信
+```
 
 ###### cms识别
 
+```
 finger.tidesec.com #云悉指纹
 
 fp.shuziguanxing.com #数字观心
@@ -453,21 +530,25 @@ github.com/TideSec/TideFinger #TideFinger (指纹识别工具) #(--主动搜集)
 whatweb #(--主动搜集)
 
 wappalyze #浏览器插件 #(--主动搜集)
+```
 
 ###### 大型工具
 
+```
 www.maltego.com #maltego
 
 github.com/ki9mu/ARL-plus-docker #arl灯塔系统
 
 github.com/penson233/TailorFinder #Tailorfinder #教程 xz.aliyun.com/news/13179 
+```
 
 ------
 
 #### 搜索引擎(google，bing，yandex，duckduckgo，baidu，sogou)
 
-google
+###### google
 
+```
 www.google.com #google
 
 google dorking
@@ -501,30 +582,41 @@ filetype: 限定搜索结果的文件类型 (doc,docx,xls,xlsx,ppt,pptx,txt,htm,
 info: 快速获取相似页
 
 link: 查找指向该域名的外部链接
+```
 
 ###### bing
 
+```
 www.bing.com #bing
 
 learn.microsoft.com/zh-cn/microsoftsearch/overview-microsoft-search-bing #搜索指南
+```
 
 ###### yandex
 
+```
 yandex.com #yandex
+```
 
 ###### duckduckgo
 
+```
 duckduckgo.com #duckduckgo 
 
 help.duckduckgo.com/duckduckgo-help-pages/results/syntax/ #搜索指南
+```
 
 ###### baidu
 
+```
 www.baidu.com #baidu
+```
 
 ###### sogou
 
+```
 sogou.com #sogou
+```
 
 ------
 
@@ -532,14 +624,17 @@ sogou.com #sogou
 
 ###### exif数据
 
+```
 exiftool xxx.png
 
 exif.tuchong.com
 
 exifdata.com
+```
 
 ###### 地图开放平台
 
+```
 https://lbsyun.baidu.com/ 百度地图开放平台
 
 ++++++++++++++++++++++++++++++
@@ -729,17 +824,23 @@ https://720yun.com/ 720云
 anjuke.com/ 安居客 (可能会有小区全景图)
 
 https://www.skyscrapercity.com/ (城市天际线图库)
+```
+
+
 
 ------
 
-AI
+#### AI
 
+```
 claude，cheatgpt，gemini，Grok，cursor，Copilot，deepseek，豆包/Dola
+```
 
 ------
 
 ### dark website(暗网)
 
+```
 dark.fail #dark fail
 
 http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/ #Ahmia
@@ -765,11 +866,13 @@ http://crqkllx7afomrokwx6f2sjcnl2do2i3i77hjjb4eqetlgq3cths3o6ad.onion/ #megaTor(
 v2 : https://github.com/lachesis/scallion
 
 v3 : https://github.com/dr-bonez/tor-v3-vanity
+```
 
 ------
 
 ### 加密货币&稳定币&代币&web3
 
+```
 交易所(违背区块链去中心化)
 
 币安，火币，欧易
@@ -841,11 +944,13 @@ web1.0 读(早期雅虎等)
 web2.0 读 & 写(facebook,tiktok等)
 
 web3.0 读 & 写 & 拥有(类似比特币的持有，比如上传视频到区块链，拥有权，删除权为自己所有)
+```
 
 ------
 
 ### Other websites' collection
 
+```
 世界上最受欢迎的网站排名 : www.similarweb.com/top-websites
 
 数据库泄露
@@ -855,3 +960,4 @@ intelx.io
 pipl.com
 
 spiderfoot.xyz
+```
