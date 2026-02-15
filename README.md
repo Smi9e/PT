@@ -7,17 +7,17 @@ The essence of penetration testing is the pursuit of "technique" and the  sublim
 What we seek and ultimately obtain in penetration testing can be distilled into two things: **privilege** and **data**.
 They complement each other and are indispensable.
 
-
+<br>
 
 Penetration testing is divided into seven stages:
 **Reconnaissance, Foothold, Enumeration, Privilege Escalation, Lateral Movement, Persistence, and Covering Tracks.**
 They form a one-way chain, inheriting from the predecessor and pointing to the successor.
 
-
+<br>
 
 Silent in the shadows, perceiving before emergence, entering without a gap,  striking where unguarded, spreading without bounds, standing undefeated, and vanishing without a trace.
 
-
+<br>
 
 **Reconnaissance:** Silent scouting, sensing the terrain.[Reconnaissance](Reconnaissance/Reconnaissance.md)
 
@@ -43,7 +43,7 @@ Silent in the shadows, perceiving before emergence, entering without a gap,  str
 
 它们相辅相成，不可或缺。
 
-
+<br>
 
 渗透测试分为七个阶段：
 
@@ -51,11 +51,11 @@ Silent in the shadows, perceiving before emergence, entering without a gap,  str
 
 它们如同单向的链表，承接着前者，索引着后者。
 
-
+<br>
 
 潜于无形，察于未萌，入于无隙，攻于不备，横于无疆，立于不败，归于无踪。
 
-
+<br>
 
 侦察：潜影探虚，观风辨迹。
 
