@@ -1,6 +1,6 @@
-# *侦察（此阶段的目的是为了尽可能搜集目标信息。)
+# Reconnaissance
 
-分为开源情报搜集(OSINT)和主动搜集(主动情报搜集与打点阶段密不可分)
+分为开源情报搜集(OSINT)和主动搜集(主动情报搜集与打点阶段密不可分)。
 
 ## OSINT(开源情报收集)
 
@@ -8,45 +8,47 @@
 
 开源情报（OSINT）：来自公开可获取的渠道，如新闻报道、政府公告、企业财报、社交媒体、学术论文、卫星影像等，特点是合法、成本低、覆盖面广，是现代情报收集的基础。
 
+###### 调查目标：
 
+人员，组织，事件。
 
-###### 调查目标 :
+###### 框架：
 
-人员，组织，事件
+https://osintframework.com/
 
-###### 框架 : 
+###### 综合工具网站：
 
-osintframework.com
+https://www.raebaker.net/resources
 
-###### 综合工具网站 : 
+https://start.me/p/7kYgk2/rae-baker-deep-dive-osint
 
-www.raebaker.net/resources / start.me/p/7kYgk2/rae-baker-deep-dive-osint 
+https://spacekid.notion.site/osint
 
-spacekid.notion.site/osint
+https://rr.reuser.biz/
 
-rr.reuser.biz
-
-###### 教程 :
+###### 教程：
 
 https://xz.aliyun.com/news/17607
 
+<br>
 
+###### 主要分类：
 
 opsec
 
-
+<br>
 
 人员情报(&社交媒体情报&交通情报)，组织情报
 
-
+<br>
 
 搜索引擎(google dorking)，reverse images search(图寻/网络迷踪)，AI
 
-
+<br>
 
 dark website(暗网)，加密货币&稳定币&代币&web3
 
-
+<br>
 
 Other websites' collection(其他网站收集)
 
@@ -54,21 +56,17 @@ Other websites' collection(其他网站收集)
 
 #### opsec(行动安全)
 
-保持安全隐私:(主要分为两种方式，使用虚拟信息，创造真空通道)
+保持安全隐私：（主要分为两种方式，使用虚拟信息，创造真空通道）。
 
-虚拟信息，虚拟设备，虚拟通道
+###### 虚拟信息，虚拟设备，虚拟通道
 
-尽可能少的留下可能证明真实身份的攻击痕迹
+尽可能少的留下可能证明真实身份的攻击痕迹。
 
-
-
-真实机/虚拟机
+###### 真实机/虚拟机
 
 专用设备，二手笔记本，vmware，virtualBox，Hyper-V，KVM，QEMU，移动设备模拟器
 
-
-
-虚拟通讯
+###### 虚拟通讯
 
 vpn，vps，机场
 
@@ -76,9 +74,7 @@ vpn，vps，机场
 
 tor，freenet，i2p，canvas defender(数字指纹)，AdBlock(数字指纹)，Disconnect Me(数字指纹)
 
-
-
-虚拟账户
+###### 虚拟账户
 
 (虚拟电话)
 
@@ -88,17 +84,15 @@ voip，mysudo
 
 protonmail，thexyz，startmail，tutanota，zoho Mail
 
-
-
-假身份生成
+###### 假身份生成
 
 www.fakenamegenerator.com
 
-随机头像生成
+###### 随机头像生成
 
 www.thispersondoesnotexist.com
 
-虚拟支付卡
+###### 虚拟支付卡
 
 www.privacy.com/virtual-card
 
