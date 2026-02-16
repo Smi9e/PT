@@ -1,4 +1,4 @@
-linux 命令行操作(bash)
+## linux 命令行操作(bash)
 
 建立shell
 
