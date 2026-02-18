@@ -1,4 +1,4 @@
-# BEGIN : This is a list of penetration tests.
+# README
 
 The Art of War states: "Subtlety and ingenuity lie in the application of the mind."
 

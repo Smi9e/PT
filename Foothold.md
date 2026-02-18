@@ -1,30 +1,6 @@
-# *打点（此阶段的目的是为了获得初始权限，方便后续操作。)
+# Foothold
 
 [TOC]
-
-## 攻击侧重
-
-## 
-
-ftp(21)
-
-ssh(22)
-
-telnet(23)
-
-smtp(25)
-
-*http/https(80/443/8080)
-
-*rpc,smb(135,139,445)
-
-imap/imaps(143/993)
-
-rdp(3389)
-
-mysql(3306) mssql(1433) postgresql(5432) oracle(1521) mongodb(27017) redis(6379)
-
-
 
 ## web(80,443,8080)
 
@@ -58,9 +34,7 @@ whatweb #(--主动搜集)
 
 wappalyze #浏览器插件 #(--主动搜集)
 
-漏洞
-
-sql
+sql漏洞
 
 sqlmap
 
@@ -144,9 +118,7 @@ arp-scan
 
 arp-scan --interface=eth0 192.168.10.1/24
 
-
-
-## smb,rpc(135,139,445)(*横向*)
+## smb,rpc(135,139,445)
 
 开启smb服务
 
@@ -242,7 +214,7 @@ enum4linux-ng -u win2019 -p root 192.168.12.5 -U -R
 
 rpcclient $> enumdomains ; lookupdomain ; lookupsids ; lookupsids S-1-5-21-873118422-227618334-1429070027-1000/1001/1002 ; lookupnames win2019
 
-## ftp(21),mstsc(3389),smtp(25),imap/imaps(143/993),rstp(554)
+## ftp(21)
 
 ------
 
@@ -266,7 +238,11 @@ wget -m ftp://anonymous:qwe@10.10.10.211 #-m(详细递归)
 
 ------
 
-mstsc(3389)
+## ssh(22)
+
+sudo sshpass -p 'xx' ssh xx@xxx.xxx.xxx.xxx
+
+## mstsc(3389)
 
 开启远程mstsc服务
 
@@ -288,25 +264,17 @@ xfreerdp /v:192.168.1.100 /u:Administrator /p:password /size:1920x1080 #xfreerdp
 
 ------
 
-smtp(25),imap/imaps(143/993) #邮件发送/接收协议
+## smtp(25),imap/imaps(143/993)
 
-发送邮件
+#邮件发送/接收协议发送邮件
 
 swaks --to 1918626596@qq.com --from qwe18230138770@163.com --server smtp.163.com --auth LOGIN --auth-user qwe18230138770@163.com --auth-password AHbgQ7d85AUXFUe2 --tls --body "i see you" --header "Subject:look"
 
 ------
 
-rstp(554)
+## rstp(554)
 
 vlc 摄像头流媒体
-
-## ssh
-
-sudo sshpass -p 'xx' ssh xx@xxx.xxx.xxx.xxx
-
-
-
-
 
 ## mysql(3306),mssql(1433),postgresql(5432),oracle(1521),mongodb(27017),redis(6379)
 
@@ -377,12 +345,6 @@ redis-cli -h 192.168.12.1 -p 10000 [-a "yourpassword"] [--raw] #匿名登录 -a�
 info #查看基本信息
 
 SCAN 0 COUNT 10 #查看所有键值
-
-
-
-
-
-
 
 ## 社会工程学（网络钓鱼，短信钓鱼，电信钓鱼，冒充），wifi攻击，
 

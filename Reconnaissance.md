@@ -838,7 +838,7 @@ claude，cheatgpt，gemini，Grok，cursor，Copilot，deepseek，豆包/Dola
 
 ------
 
-### dark website(暗网)
+#### dark website(暗网)
 
 ```
 dark.fail #dark fail
@@ -870,7 +870,7 @@ v3 : https://github.com/dr-bonez/tor-v3-vanity
 
 ------
 
-### 加密货币&稳定币&代币&web3
+#### 加密货币&稳定币&代币&web3
 
 ```
 交易所(违背区块链去中心化)
@@ -948,7 +948,7 @@ web3.0 读 & 写 & 拥有(类似比特币的持有，比如上传视频到区块
 
 ------
 
-### Other websites' collection
+#### Other websites' collection
 
 ```
 世界上最受欢迎的网站排名 : www.similarweb.com/top-websites
