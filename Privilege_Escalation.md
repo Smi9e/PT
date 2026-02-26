@@ -2,8 +2,6 @@
 
 权限提升可以分为"水平权限提升(横向移动)"，"垂直权限提升"两种。
 
-<br>
-
 权限之所以可以获得，提升，离不开这三种方式：
 
 1.低权限修改，高权限执行。
@@ -903,3 +901,7 @@ www.google.com #google
 www.seebug.org #Seebug
 
 github.com #github
+
+
+
+Auto_Wordlists #github

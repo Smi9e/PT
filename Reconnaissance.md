@@ -6,7 +6,7 @@
 
 ## OSINT(开源情报收集)
 
-#### 情报周期 { 需求(plan)，收集(collect)，处理(process)，分析(analysis)，分发(dissemination) } 
+情报周期 { 需求(plan)，收集(collect)，处理(process)，分析(analysis)，分发(dissemination) } 
 
 开源情报（OSINT）：来自公开可获取的渠道，如新闻报道、政府公告、企业财报、社交媒体、学术论文、卫星影像等，特点是合法、成本低、覆盖面广，是现代情报收集的基础。
 

